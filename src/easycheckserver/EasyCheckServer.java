@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,44 +42,43 @@ public class EasyCheckServer {
 
     private static String handleRequest(HttpExchange t) {
         String response = "";
-        URI uri = t.getRequestURI();
-        System.out.println("URL: " + uri);
-        if (uri.getPath().contains("reserves")) {
-            response = handleReserva(queryToMap(uri.getQuery()));
-        } else if (uri.getPath().contains("serveis")) {
-            response = handleServeis(queryToMap(uri.getQuery()));
-        }
+        String requestMethod = t.getRequestMethod();
+        if (requestMethod.equals("GET")) {
+            URI uri = t.getRequestURI();
+            System.out.println("URL: " + uri);
+            if (uri.getPath().contains("reserves")) {
+                response = handleGetReserva(queryToMap(uri.getQuery()));
+            } else if (uri.getPath().contains("serveis")) {
+                response = handleGetServeis(queryToMap(uri.getQuery()));
+            }
+        } else if (requestMethod.equals("POST")) {
+            
+        } 
         return response;
     }
 
-
-    private static String handleReserva(Map<String, String> query) {
+    private static String handleGetReserva(Map<String, String> query) {
         String response = "";
         if (!query.isEmpty()) {
             if (query.containsKey("qrcode")) {
-                String qrcode = (String) query.get("qrcode");
-                response = "Reserves amb QRCode: " + qrcode;
+                response = getReservesQRCode(query.get("qrcode"));
             } else if (query.containsKey("loc")) {
-                String loc = (String) query.get("loc");
-                response = "Reserves amb Localitzador: " + loc;
+                response = getReservesLoc(query.get("loc"));
             } else if (query.containsKey("dni")) {
-                String dni = (String) query.get("dni");
-                response = "Reserves amb DNI: " + dni;
+                response = getReservesDni(query.get("dni"));
                 if (query.containsKey("data")) {
-                    String data = (String) query.get("data");
-                    response = response + " " + "i data: " + data;
+                    response = getReservesDniData(query.get("dni"),query.get("data"));
                 }
             } else if (query.containsKey("data")) {
-                String data = (String) query.get("data");
-                response = "Reserves amb data: " + data;
+                response = getReservesDni(query.get("data"));
             }
         } else {
-            response = "TOTES LES RESERVES";
+            response = getReserves();
         }
         return response;
     }
 
-    private static String handleServeis(Map<String, String> query) {
+    private static String handleGetServeis(Map<String, String> query) {
         String response = "";
         if (!query.isEmpty()) {
             if (query.containsKey("treballador")) {
@@ -92,6 +90,30 @@ public class EasyCheckServer {
         }
 
         return response;
+    }
+    
+    private static String getReserves(){
+        return "";
+    }
+    
+    private static String getReservesQRCode(String qrcode) {
+        return "";
+    }
+    
+    private static String getReservesLoc(String loc) {
+        return "";
+    }
+    
+    private static String getReservesDni(String dni) {
+        return "";
+    }
+    
+    private static String getReservesData(String data) {
+        return "";
+    }
+    
+    private static String getReservesDniData(String dni, String data) {
+        return "";
     }
 
 }
