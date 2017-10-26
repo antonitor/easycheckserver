@@ -15,7 +15,7 @@ import java.net.URL;
  *
  * @author Toni
  */
-public class TestClient {
+public final class TestClient {
 
     private static final String BASE_URL = "localhost";
     private static final int PORT = 8080;

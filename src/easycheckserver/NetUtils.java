@@ -48,15 +48,15 @@ public class NetUtils {
     }
     
     public static String buildQuery(String key1, String value1, String key2, String value2) {
-        return new String(key1 + "=" + value1 + "&" + key2 + "=" + value2);
+        return key1 + "=" + value1 + "&" + key2 + "=" + value2;
     }
     
     public static String buildQuery(String key, String value) {
-        return new String(key + "=" + value);
+        return key + "=" + value;
     }
     
     public static Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
         if (query != null) {
             for (String param : query.split("&")) {
                 String pair[] = param.split("=");
