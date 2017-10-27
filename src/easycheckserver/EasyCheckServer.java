@@ -9,9 +9,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import static easycheckserver.NetUtils.queryToMap;
-import easycheckserver.model.Treballador;
-import easycheckserver.persistencia.GestorPersistencia;
-import easycheckserver.persistencia.UtilitatPersistenciaException;
 import easycheckserver.utils.JSonParser;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,15 +24,18 @@ public class EasyCheckServer {
 
     public static JSonParser parser;
 
+    private EasyCheckServer() {
+    }
+
     public static void main(String[] args) throws Exception {
         parser = new JSonParser();
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/easycheckapi/reserves", new ReservesHandler());
-        server.createContext("/easycheckapi/serveis", new ServeisHandler());
+        server.createContext("/easycheckapi/servei", new ServeisHandler());
+        server.createContext("/easycheckapi/treballador", new TreballadorsHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
-
 
     static class ReservesHandler implements HttpHandler {
 
@@ -53,7 +53,7 @@ public class EasyCheckServer {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            String response = handleReservesRequest(t);
+            String response = handleServeisRequest(t);
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -65,7 +65,7 @@ public class EasyCheckServer {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            String response = handleReservesRequest(t);
+            String response = handleTreballadorRequest(t);
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -107,14 +107,42 @@ public class EasyCheckServer {
         URI uri = t.getRequestURI();
         Map<String, String> query = queryToMap(uri.getQuery());
         if (requestMethod.equals("GET")) {
+            System.out.println("HTTP GET REQUEST: " + uri);
             if (!query.isEmpty()) {
-                if (query.containsKey("treballador")) {
-                    String treballador = (String) query.get("treballador");
-                    response = "Serveis del treballador: " + treballador;
+                if (query.containsKey("treballador") && query.containsKey("data") && query.containsKey("hora")) {
+                    response = parser.getServeisTreballadorDataHora(query.get("treballador"), query.get("data"), query.get("hora"));
+                } else if (query.containsKey("treballador") && query.containsKey("data")) {
+                    response = parser.getServeisTreballadorData(query.get("treballador"), query.get("data"));
+                } else if (query.containsKey("treballador")) {
+                    response = parser.getServeisTreballador(query.get("treballador"));
+                } else if (query.containsKey("data") && query.containsKey("hora")) {
+                    response = parser.getServeisDataHora(query.get("data"), query.get("hora"));
+                } else if (query.containsKey("data")) {
+                    response = parser.getServeisData(query.get("data"));
                 }
             } else {
-                response = "TOTS ELS SERVEIS";
+                response = parser.getServeis();
             }
+        } else if (requestMethod.equals("POST")) {
+            System.out.println("HTTP POST REQUEST: " + uri);
+        }
+        return response;
+    }
+
+    private static String handleTreballadorRequest(HttpExchange t) {
+        String response = "";
+        String requestMethod = t.getRequestMethod();
+        URI uri = t.getRequestURI();
+        Map<String, String> query = queryToMap(uri.getQuery());
+        if (requestMethod.equals("GET")) {
+            System.out.println("HTTP GET REQUEST: " + uri);
+            if (query.containsKey("id")) {
+                response = parser.getTreballadorId(query.get("id"));
+            } else {
+                response = parser.getTreballadors();
+            }
+        } else if (requestMethod.equals("POST")) {
+            System.out.println("HTTP POST REQUEST: " + uri);
         }
         return response;
     }

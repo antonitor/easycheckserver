@@ -47,15 +47,15 @@ public class JSonParser {
         return "";
     }
     
-    public String getServeisTreballador(int treballadorID) {
+    public String getServeisTreballador(String treballadorID) {
         return "";
     }
     
-    public String getServeisTreballadorData(int treballadorID, String data) {
+    public String getServeisTreballadorData(String treballadorID, String data) {
         return "";
     }
     
-    public String getServeisTreballadorDataHora(int treballadorID, String data, String hora) {
+    public String getServeisTreballadorDataHora(String treballadorID, String data, String hora) {
         return "";
     }
     
@@ -67,4 +67,11 @@ public class JSonParser {
         return "";
     }
     
+    public String getTreballadorId(String id) {
+        return "";
+    }
+    
+    public String getTreballadors() {
+        return "";
+    }
 }
