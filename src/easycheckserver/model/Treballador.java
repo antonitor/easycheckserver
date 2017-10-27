@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,11 +41,15 @@ public class Treballador implements Serializable{
     @Column(name = "password")
     private String password;
     @Column(name = "esAdmin")
-    private int esAdmin;
-    @OneToMany(targetEntity = Servei.class, mappedBy = "servei")
+    private boolean esAdmin;
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Servei.class, mappedBy = "treballador")
     private final List<Servei> llistaServeis = new ArrayList();
+    
+    public Treballador(){
+        
+    }
 
-    public Treballador(String nom, String cognom1, String cognom2, String login, String password, int esAdmin) {
+    public Treballador(String nom, String cognom1, String cognom2, String login, String password, boolean esAdmin) {
         this.nom = nom;
         this.cognom1 = cognom1;
         this.cognom2 = cognom2;
@@ -140,14 +145,14 @@ public class Treballador implements Serializable{
     /**
      * @return the esAdmin
      */
-    public int getEsAdmin() {
+    public boolean getEsAdmin() {
         return esAdmin;
     }
 
     /**
      * @param esAdmin the esAdmin to set
      */
-    public void setEsAdmin(int esAdmin) {
+    public void setEsAdmin(boolean esAdmin) {
         this.esAdmin = esAdmin;
     }
 
@@ -164,5 +169,10 @@ public class Treballador implements Serializable{
     public void setLlistaServeis(List<Servei> llistaServeis) {
         this.llistaServeis.clear();
         this.llistaServeis.addAll(llistaServeis);
+    }
+    
+    @Override
+    public String toString() {
+        return nom + " " + cognom1 + " " + cognom2;
     }
 }

@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -32,17 +34,16 @@ public class Servei implements Serializable{
     @Column(name = "_id", updatable=false)
     private int id;
     @Column(name = "descripcio")
-    private String descripcio;
-    @Column(name = "id_treballador")
-    @ManyToOne
-    private int id_treballador;
+    private String descripcio;    
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Treballador treballador;
     @Column(name = "data_servei")
     private String data_servei;
     @Column(name = "hora_inici")
     private String hora_inici;
     @Column(name = "hora_final")
     private String hora_final;
-    @OneToMany(targetEntity = Reserva.class, mappedBy = "reserva")
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Reserva.class, mappedBy = "servei")
     private List<Reserva> llistaReserves = new ArrayList();
 
     /**
@@ -74,17 +75,17 @@ public class Servei implements Serializable{
     }
 
     /**
-     * @return the id_treballador
+     * @return the treballador
      */
-    public int getId_treballador() {
-        return id_treballador;
+    public Treballador getTreballador() {
+        return treballador;
     }
 
     /**
-     * @param id_treballador the id_treballador to set
+     * @param treballador the treballador to set
      */
-    public void setId_treballador(int id_treballador) {
-        this.id_treballador = id_treballador;
+    public void setTreballador(Treballador treballador) {
+        this.treballador = treballador;
     }
 
     /**

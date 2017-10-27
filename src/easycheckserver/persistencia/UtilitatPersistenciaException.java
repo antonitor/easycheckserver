@@ -9,7 +9,7 @@ package easycheckserver.persistencia;
  *
  * @author Toni
  */
-class UtilitatPersistenciaException extends Exception {
+public class UtilitatPersistenciaException extends Exception {
     public UtilitatPersistenciaException (String missatge){
         super(missatge);
     }

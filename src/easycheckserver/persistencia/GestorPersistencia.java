@@ -43,19 +43,22 @@ public class GestorPersistencia {
             em.persist(treballador);
             em.getTransaction().commit();
         } catch (Exception e) {
-            throw new UtilitatPersistenciaException("");
+            e.printStackTrace();
+            //throw new UtilitatPersistenciaException("");
         }
     }
 
-    public Treballador obtenirTreballador(int id) throws UtilitatPersistenciaException {
-        Treballador treballador;
+    public Treballador obtenirTreballador(int id) throws UtilitatPersistenciaException {        
+        Treballador treballador = null;
+        System.out.println(id);
         try {
             treballador = em.find(Treballador.class, id);
             if (treballador == null) {
                 throw new UtilitatPersistenciaException("Clau inexistent");
             }
         } catch (Exception e) {
-            throw new UtilitatPersistenciaException(" " + e.toString());
+            //throw new UtilitatPersistenciaException(" " + e.toString());
+            e.printStackTrace();
         }
         return treballador;
     }

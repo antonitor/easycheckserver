@@ -8,9 +8,11 @@ package easycheckserver.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -28,9 +30,8 @@ public class Reserva implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="reserva_id_seq")
     @Column(name = "_id", updatable=false)
     private int id;
-    @Column(name = "id_servei")
-    @ManyToOne
-    private int id_servei;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Servei servei;
     @Column(name = "localitzador")
     private String localitzador;
     @Column(name = "data_reserva")
@@ -50,7 +51,7 @@ public class Reserva implements Serializable {
     @Column(name = "dni_titular")
     private String dni_titular;
     @Column(name = "checkin")
-    private int checkin;
+    private boolean checkin;
 
     /**
      * @return the id
@@ -67,17 +68,17 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * @return the id_servei
+     * @return the servei
      */
-    public int getId_servei() {
-        return id_servei;
+    public Servei getServei() {
+        return servei;
     }
 
     /**
-     * @param id_servei the id_servei to set
+     * @param servei the servei to set
      */
-    public void setId_servei(int id_servei) {
-        this.id_servei = id_servei;
+    public void setServei(Servei servei) {
+        this.servei = servei;
     }
 
     /**
@@ -209,14 +210,14 @@ public class Reserva implements Serializable {
     /**
      * @return the checkin
      */
-    public int getCheckin() {
+    public boolean getCheckin() {
         return checkin;
     }
 
     /**
      * @param checkin the checkin to set
      */
-    public void setCheckin(int checkin) {
+    public void setCheckin(boolean checkin) {
         this.checkin = checkin;
     }
     

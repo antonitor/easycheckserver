@@ -9,27 +9,35 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import static easycheckserver.NetUtils.queryToMap;
+import easycheckserver.model.Treballador;
+import easycheckserver.persistencia.GestorPersistencia;
+import easycheckserver.persistencia.UtilitatPersistenciaException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Toni
  */
 public class EasyCheckServer {
+    
+    private static GestorPersistencia gestor;
 
     public static void main(String[] args) throws Exception {
+        startGestorPersistencia();
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/easycheckapi", new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
     
-    private static void startGestorPersistencia(String unitatPersistencia) {
-        
+    private static void startGestorPersistencia() {
+        gestor = new GestorPersistencia();
     }
 
     static class MyHandler implements HttpHandler {
@@ -54,6 +62,8 @@ public class EasyCheckServer {
                 response = handleGetReserva(queryToMap(uri.getQuery()));
             } else if (uri.getPath().contains("serveis")) {
                 response = handleGetServeis(queryToMap(uri.getQuery()));
+            } else if (uri.getPath().contains("treballador")) {
+                response = handleGetTreballadors(queryToMap(uri.getQuery()));
             }
         } else if (requestMethod.equals("POST")) {
             
@@ -95,6 +105,21 @@ public class EasyCheckServer {
 
         return response;
     }
+    
+    private static String handleGetTreballadors(Map<String, String> query) {
+        Treballador treballador = null;
+        
+        try {
+            gestor.obrir();
+            treballador = gestor.obtenirTreballador(13);
+            gestor.tancar();
+        } catch (UtilitatPersistenciaException ex) {
+            Logger.getLogger(EasyCheckServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return treballador.toString();
+    }
+    
     
     private static String getReserves(){
         return "";
