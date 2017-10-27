@@ -27,6 +27,10 @@ public class EasyCheckServer {
         server.setExecutor(null); // creates a default executor
         server.start();
     }
+    
+    private static void startGestorPersistencia(String unitatPersistencia) {
+        
+    }
 
     static class MyHandler implements HttpHandler {
 

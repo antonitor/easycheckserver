@@ -15,25 +15,19 @@ import javax.persistence.Persistence;
  * @author Toni
  */
 public class GestorPersistencia {
-    
+
     EntityManagerFactory emf;
     EntityManager em;
-    
-    private final String uPersistencia;
-    
-    public GestorPersistencia(String uPersistencia){
-        this.uPersistencia = uPersistencia;
-    }
-    
+
     public void obrir() throws UtilitatPersistenciaException {
         try {
-            emf = Persistence.createEntityManagerFactory(uPersistencia);
+            emf = Persistence.createEntityManagerFactory("EasyCheckServerPU");
             em = emf.createEntityManager();
         } catch (Exception e) {
             throw e;
         }
     }
-    
+
     public void tancar() {
         try {
             em.close();
@@ -42,7 +36,7 @@ public class GestorPersistencia {
 
         }
     }
-    
+
     public void inserirTreballador(Treballador treballador) throws UtilitatPersistenciaException {
         try {
             em.getTransaction().begin();
@@ -52,7 +46,7 @@ public class GestorPersistencia {
             throw new UtilitatPersistenciaException("");
         }
     }
-    
+
     public Treballador obtenirTreballador(int id) throws UtilitatPersistenciaException {
         Treballador treballador;
         try {
@@ -65,7 +59,7 @@ public class GestorPersistencia {
         }
         return treballador;
     }
-    
+
     public void modificarTreballador(Treballador treballador) throws UtilitatPersistenciaException {
         try {
             em.getTransaction().begin();
@@ -75,5 +69,23 @@ public class GestorPersistencia {
             throw new UtilitatPersistenciaException("Impossible actualitzar treballador " + e.toString());
         }
     }
-        
+
+    public void modificarTreballador(int id) throws UtilitatPersistenciaException {
+        modificarTreballador(obtenirTreballador(id));
+    }
+
+    public void esborrarTreballador(Treballador treballador) throws UtilitatPersistenciaException {
+        try {
+            em.getTransaction().begin();
+            em.remove(treballador);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            throw new UtilitatPersistenciaException("Impossible eliminar treballador " + e.toString());
+        }
+    }
+    
+    public void esborrarTreballador(int id) throws UtilitatPersistenciaException {
+        esborrarTreballador(obtenirTreballador(id));
+    }
+
 }
