@@ -6,7 +6,6 @@
 package easycheckserver;
 
 import easycheckserver.model.Treballador;
-import easycheckserver.persistencia.GestorPersistencia;
 
 /**
  *
@@ -14,10 +13,7 @@ import easycheckserver.persistencia.GestorPersistencia;
  */
 public class InsertTest {
     public static void main(String[] args) throws Exception {
-        GestorPersistencia gestor = new GestorPersistencia();
-        gestor.obrir();
         Treballador t = new Treballador("test","torres","mari","toni","pass",true);
-        gestor.inserirTreballador(t);
-        gestor.tancar();
+      
     }
 }

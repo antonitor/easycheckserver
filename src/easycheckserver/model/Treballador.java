@@ -22,27 +22,15 @@ import javax.persistence.Table;
  *
  * @author Toni
  */
-@Entity
-@Table(name="treballador", schema="public")
 public class Treballador implements Serializable{
-    @Id
-    @SequenceGenerator(name="treballador_id_seq", sequenceName="treballador_id_seq", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="treballador_id_seq")
-    @Column(name = "_id", updatable=false)
+    
     private int id;
-    @Column(name = "nom")
     private String nom;
-    @Column(name = "cognom1")
     private String cognom1;
-    @Column(name = "cognom2")
     private String cognom2;
-    @Column(name = "login")
     private String login;
-    @Column(name = "password")
     private String password;
-    @Column(name = "esAdmin")
     private boolean esAdmin;
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Servei.class, mappedBy = "treballador")
     private final List<Servei> llistaServeis = new ArrayList();
     
     public Treballador(){

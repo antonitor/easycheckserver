@@ -5,7 +5,7 @@
  */
 package easycheckserver.utils;
 
-import easycheckserver.persistencia.GestorPersistencia;
+import com.google.gson.Gson;
 
 /**
  *
@@ -13,10 +13,10 @@ import easycheckserver.persistencia.GestorPersistencia;
  */
 public class JSonParser {
     
-    private GestorPersistencia gestor;
+    private final Gson gson;
     
     public JSonParser(){
-        gestor = new GestorPersistencia();
+        gson = new Gson();
     }
     
     public String getReserves() {

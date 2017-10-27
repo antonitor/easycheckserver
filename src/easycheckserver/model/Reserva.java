@@ -5,52 +5,23 @@
  */
 package easycheckserver.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
-/**
- *
- * @author Toni
- */
-@Entity
-@Table(name="reserva", schema="public")
 public class Reserva implements Serializable {
     
-    @Id
-    @SequenceGenerator(name="reserva_id_seq", sequenceName="reserva_id_seq", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="reserva_id_seq")
-    @Column(name = "_id", updatable=false)
+   
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Servei servei;
-    @Column(name = "localitzador")
+    private int id_servei;
     private String localitzador;
-    @Column(name = "data_reserva")
     private String data_reserva;
-    @Column(name = "nom_titular")
     private String nom_titular;
-    @Column(name = "cognom1_titular")
     private String cognom1_titular;
-    @Column(name = "cognom2_titular")
     private String cognom2_titular;
-    @Column(name = "telefon_titular")
     private String telefon_titular;
-    @Column(name = "email_titular")
     private String email_titular;
-    @Column(name = "qr_code")
     private String qr_code;
-    @Column(name = "dni_titular")
     private String dni_titular;
-    @Column(name = "checkin")
     private boolean checkin;
 
     /**
@@ -65,20 +36,6 @@ public class Reserva implements Serializable {
      */
     public void setId(int id) {
         this.id = id;
-    }
-
-    /**
-     * @return the servei
-     */
-    public Servei getServei() {
-        return servei;
-    }
-
-    /**
-     * @param servei the servei to set
-     */
-    public void setServei(Servei servei) {
-        this.servei = servei;
     }
 
     /**

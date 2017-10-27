@@ -8,42 +8,19 @@ package easycheckserver.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 /**
  *
  * @author Toni
  */
-@Entity
-@Table(name="serveis", schema="public")
 public class Servei implements Serializable{
     
-    @Id
-    @SequenceGenerator(name="serveis_id_seq", sequenceName="serveis_id_seq", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="serveis_id_seq")
-    @Column(name = "_id", updatable=false)
     private int id;
-    @Column(name = "descripcio")
     private String descripcio;    
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Treballador treballador;
-    @Column(name = "data_servei")
+    private int idTreballador;
     private String data_servei;
-    @Column(name = "hora_inici")
     private String hora_inici;
-    @Column(name = "hora_final")
     private String hora_final;
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Reserva.class, mappedBy = "servei")
     private List<Reserva> llistaReserves = new ArrayList();
 
     /**
@@ -74,19 +51,7 @@ public class Servei implements Serializable{
         this.descripcio = descripcio;
     }
 
-    /**
-     * @return the treballador
-     */
-    public Treballador getTreballador() {
-        return treballador;
-    }
 
-    /**
-     * @param treballador the treballador to set
-     */
-    public void setTreballador(Treballador treballador) {
-        this.treballador = treballador;
-    }
 
     /**
      * @return the data_servei
