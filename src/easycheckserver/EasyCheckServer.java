@@ -12,39 +12,36 @@ import static easycheckserver.NetUtils.queryToMap;
 import easycheckserver.model.Treballador;
 import easycheckserver.persistencia.GestorPersistencia;
 import easycheckserver.persistencia.UtilitatPersistenciaException;
+import easycheckserver.utils.JSonParser;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Toni
  */
 public class EasyCheckServer {
-    
-    private static GestorPersistencia gestor;
+
+    public static JSonParser parser;
 
     public static void main(String[] args) throws Exception {
-        startGestorPersistencia();
+        parser = new JSonParser();
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/easycheckapi", new MyHandler());
+        server.createContext("/easycheckapi/reserves", new ReservesHandler());
+        server.createContext("/easycheckapi/serveis", new ServeisHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
-    
-    private static void startGestorPersistencia() {
-        gestor = new GestorPersistencia();
-    }
 
-    static class MyHandler implements HttpHandler {
+
+    static class ReservesHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            String response = handleRequest(t);
+            String response = handleReservesRequest(t);
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -52,97 +49,73 @@ public class EasyCheckServer {
         }
     }
 
-    private static String handleRequest(HttpExchange t) {
+    static class ServeisHandler implements HttpHandler {
+
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            String response = handleReservesRequest(t);
+            t.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    static class TreballadorsHandler implements HttpHandler {
+
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            String response = handleReservesRequest(t);
+            t.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    private static String handleReservesRequest(HttpExchange t) {
         String response = "";
         String requestMethod = t.getRequestMethod();
+        URI uri = t.getRequestURI();
         if (requestMethod.equals("GET")) {
-            URI uri = t.getRequestURI();
-            System.out.println("URL: " + uri);
-            if (uri.getPath().contains("reserves")) {
-                response = handleGetReserva(queryToMap(uri.getQuery()));
-            } else if (uri.getPath().contains("serveis")) {
-                response = handleGetServeis(queryToMap(uri.getQuery()));
-            } else if (uri.getPath().contains("treballador")) {
-                response = handleGetTreballadors(queryToMap(uri.getQuery()));
+            System.out.println("HTTP GET REQUEST: " + uri);
+            Map<String, String> query = queryToMap(uri.getQuery());
+            if (!query.isEmpty()) {
+                if (query.containsKey("qrcode")) {
+                    response = parser.getReservesQRCode(query.get("qrcode"));
+                } else if (query.containsKey("loc")) {
+                    response = parser.getReservesLoc(query.get("loc"));
+                } else if (query.containsKey("dni") && query.containsKey("data")) {
+                    response = parser.getReservesDniData(query.get("dni"), query.get("data"));
+                } else if (query.containsKey("data")) {
+                    response = parser.getReservesDni(query.get("dni"));
+                } else if (query.containsKey("data")) {
+                    response = parser.getReservesDni(query.get("data"));
+                }
+            } else {
+                response = parser.getReserves();
             }
         } else if (requestMethod.equals("POST")) {
-            
-        } 
+            System.out.println("HTTP POST REQUEST: " + uri);
+        }
         return response;
     }
 
-    private static String handleGetReserva(Map<String, String> query) {
+    private static String handleServeisRequest(HttpExchange t) {
         String response = "";
-        if (!query.isEmpty()) {
-            if (query.containsKey("qrcode")) {
-                response = getReservesQRCode(query.get("qrcode"));
-            } else if (query.containsKey("loc")) {
-                response = getReservesLoc(query.get("loc"));
-            } else if (query.containsKey("dni")) {
-                response = getReservesDni(query.get("dni"));
-                if (query.containsKey("data")) {
-                    response = getReservesDniData(query.get("dni"),query.get("data"));
+        String requestMethod = t.getRequestMethod();
+        URI uri = t.getRequestURI();
+        Map<String, String> query = queryToMap(uri.getQuery());
+        if (requestMethod.equals("GET")) {
+            if (!query.isEmpty()) {
+                if (query.containsKey("treballador")) {
+                    String treballador = (String) query.get("treballador");
+                    response = "Serveis del treballador: " + treballador;
                 }
-            } else if (query.containsKey("data")) {
-                response = getReservesDni(query.get("data"));
+            } else {
+                response = "TOTS ELS SERVEIS";
             }
-        } else {
-            response = getReserves();
         }
         return response;
     }
-
-    private static String handleGetServeis(Map<String, String> query) {
-        String response = "";
-        if (!query.isEmpty()) {
-            if (query.containsKey("treballador")) {
-                String treballador = (String) query.get("treballador");
-                response = "Serveis del treballador: " + treballador;
-            }
-        } else {
-            response = "TOTS ELS SERVEIS";
-        }
-
-        return response;
-    }
-    
-    private static String handleGetTreballadors(Map<String, String> query) {
-        Treballador treballador = null;
-        
-        try {
-            gestor.obrir();
-            treballador = gestor.obtenirTreballador(13);
-            gestor.tancar();
-        } catch (UtilitatPersistenciaException ex) {
-            Logger.getLogger(EasyCheckServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return treballador.toString();
-    }
-    
-    
-    private static String getReserves(){
-        return "";
-    }
-    
-    private static String getReservesQRCode(String qrcode) {
-        return "";
-    }
-    
-    private static String getReservesLoc(String loc) {
-        return "";
-    }
-    
-    private static String getReservesDni(String dni) {
-        return "";
-    }
-    
-    private static String getReservesData(String data) {
-        return "";
-    }
-    
-    private static String getReservesDniData(String dni, String data) {
-        return "";
-    }
-
 }
