@@ -9,9 +9,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Reserva implements Serializable {
-    
-   
-    private int id;
+
+    private int _id;
     private int id_servei;
     private String localitzador;
     private String data_reserva;
@@ -22,20 +21,53 @@ public class Reserva implements Serializable {
     private String email_titular;
     private String qr_code;
     private String dni_titular;
-    private boolean checkin;
+    private int checkin;
 
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
+    public Reserva() {
+
+    }
+
+    public Reserva(int id, int idSer, String loc, String data, String nom, String cognom1, String cognom2, String telf, String email, String qrcode, String dni, int checkin) {
+        this._id = id;
+        this.id_servei = idSer;
+        this.localitzador = loc;
+        this.data_reserva = data;
+        this.nom_titular = nom;
+        this.cognom1_titular = cognom1;
+        this.cognom2_titular = cognom1;
+        this.telefon_titular = telf;
+        this.email_titular = email;
+        this.qr_code = qrcode;
+        this.dni_titular = dni;
+        this.checkin = checkin;
     }
 
     /**
-     * @param id the id to set
+     * @return the _id
      */
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return _id;
+    }
+
+    /**
+     * @param _id the _id to set
+     */
+    public void setId(int _id) {
+        this._id = _id;
+    }
+
+    /**
+     * @return the id_servei
+     */
+    public int getId_servei() {
+        return id_servei;
+    }
+
+    /**
+     * @param id_servei the id_servei to set
+     */
+    public void setId_servei(int id_servei) {
+        this.id_servei = id_servei;
     }
 
     /**
@@ -167,15 +199,14 @@ public class Reserva implements Serializable {
     /**
      * @return the checkin
      */
-    public boolean getCheckin() {
+    public int getCheckin() {
         return checkin;
     }
 
     /**
      * @param checkin the checkin to set
      */
-    public void setCheckin(boolean checkin) {
+    public void setCheckin(int checkin) {
         this.checkin = checkin;
     }
-    
 }

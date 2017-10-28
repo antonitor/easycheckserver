@@ -15,40 +15,42 @@ import java.util.List;
  */
 public class Treballador implements Serializable{
     
-    private int id;
+    private int _id;
     private String nom;
     private String cognom1;
     private String cognom2;
     private String login;
     private String password;
-    private boolean esAdmin;
-    private final List<Servei> llistaServeis = new ArrayList();
+    private int esAdmin;
+    private List<Servei> llistaServeis = new ArrayList();
     
     public Treballador(){
         
     }
 
-    public Treballador(String nom, String cognom1, String cognom2, String login, String password, boolean esAdmin) {
+    public Treballador(int _id, String nom, String cognom1, String cognom2, String login, String password, int esAdmin, List<Servei> llista) {
+        this._id = _id;
         this.nom = nom;
         this.cognom1 = cognom1;
         this.cognom2 = cognom2;
         this.login = login;
         this.password = password;
         this.esAdmin = esAdmin;
-    }
-    
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
+        this.llistaServeis = llista;
     }
 
     /**
-     * @param id the id to set
+     * @return the _id
      */
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return _id;
+    }
+
+    /**
+     * @param _id the _id to set
+     */
+    public void setId(int _id) {
+        this._id = _id;
     }
 
     /**
@@ -124,14 +126,14 @@ public class Treballador implements Serializable{
     /**
      * @return the esAdmin
      */
-    public boolean getEsAdmin() {
+    public int getEsAdmin() {
         return esAdmin;
     }
 
     /**
      * @param esAdmin the esAdmin to set
      */
-    public void setEsAdmin(boolean esAdmin) {
+    public void setEsAdmin(int esAdmin) {
         this.esAdmin = esAdmin;
     }
 
@@ -146,12 +148,7 @@ public class Treballador implements Serializable{
      * @param llistaServeis the llistaServeis to set
      */
     public void setLlistaServeis(List<Servei> llistaServeis) {
-        this.llistaServeis.clear();
-        this.llistaServeis.addAll(llistaServeis);
+        this.llistaServeis = llistaServeis;
     }
     
-    @Override
-    public String toString() {
-        return nom + " " + cognom1 + " " + cognom2;
-    }
 }

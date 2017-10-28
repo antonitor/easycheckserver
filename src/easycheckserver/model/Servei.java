@@ -15,26 +15,39 @@ import java.util.List;
  */
 public class Servei implements Serializable{
     
-    private int id;
+    private int _id;
     private String descripcio;    
-    private int idTreballador;
+    private int id_treballador;
     private String data_servei;
     private String hora_inici;
     private String hora_final;
     private List<Reserva> llistaReserves = new ArrayList();
+    
+    public Servei(){
+        
+    }
+   
+    public Servei (int id, String descripcio, int idTreb, String data_servei, String hora_inici, String hora_final, List<Reserva> llista){
+        this._id = id;
+        this.descripcio = descripcio;
+        this.id_treballador = idTreb;
+        this.data_servei = data_servei;
+        this.hora_final = hora_final;
+        this.llistaReserves = llista;
+    }
 
     /**
      * @return the id
      */
     public int getId() {
-        return id;
+        return _id;
     }
 
     /**
      * @param id the id to set
      */
     public void setId(int id) {
-        this.id = id;
+        this._id = id;
     }
 
     /**
@@ -106,8 +119,21 @@ public class Servei implements Serializable{
      * @param llistaReserves the llistaReserves to set
      */
     public void setLlistaReserves(List<Reserva> llistaReserves) {
-        this.llistaReserves.clear();
-        this.llistaReserves.addAll(llistaReserves);
+        this.llistaReserves = llistaReserves;
+    }
+
+    /**
+     * @return the id_treballador
+     */
+    public int getId_treballador() {
+        return id_treballador;
+    }
+
+    /**
+     * @param id_treballador the id_treballador to set
+     */
+    public void setId_treballador(int id_treballador) {
+        this.id_treballador = id_treballador;
     }
   
     

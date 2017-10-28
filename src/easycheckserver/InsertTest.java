@@ -13,7 +13,7 @@ import easycheckserver.model.Treballador;
  */
 public class InsertTest {
     public static void main(String[] args) throws Exception {
-        Treballador t = new Treballador("test","torres","mari","toni","pass",true);
+        Treballador t = new Treballador(1,"test","torres","mari","toni","pass",1,null);
       
     }
 }
