@@ -28,6 +28,7 @@ public class DbContract {
         public static class TaulaServeis {
         public final static String NOM_TAULA = "serveis";
         public final static String ID = "_id"; 
+        public final static String ID_TREBALLADOR = "id_treballador";
         public final static String DESCRIPCIO = "descripcio";
         public final static String DATASERVEI = "data_servei";
         public final static String HORAINICI = "hora_inici";
@@ -35,7 +36,7 @@ public class DbContract {
     }
         
     public static class TaulaReserva {
-        public final static String NOM_TAULA = "serveis";
+        public final static String NOM_TAULA = "reserva";
         public final static String ID = "_id"; 
         public final static String IDSERVEI = "id_servei";
         public final static String LOCALITZADOR = "localitzador";

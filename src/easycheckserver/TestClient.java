@@ -8,6 +8,7 @@ package easycheckserver;
 import static easycheckserver.NetUtils.buildQuery;
 import static easycheckserver.NetUtils.buildUrl;
 import static easycheckserver.NetUtils.connectToUrl;
+import easycheckserver.utils.JSonParser;
 import java.net.URL;
 
 
@@ -19,17 +20,17 @@ public final class TestClient {
 
     private static final String BASE_URL = "localhost";
     private static final int PORT = 8080;
+    private JSonParser parser;
     
 
     public static void main(String[] args) {
-        TestClient test = new TestClient();       
+        TestClient test = new TestClient();
     }
 
     public TestClient() {
-        System.out.println(obtenirReserves());
-        System.out.println(obtenirReservesDniData("47254878k","8-5-85"));
-        System.out.println(obtenirReservesDni("47254878k"));
-        System.out.println(obtenirReservesData("8-5-85"));
+        parser = new JSonParser();
+        
+        System.out.println(parser.getReservesServei("3"));
     }
 
     public String obtenirReserves() {

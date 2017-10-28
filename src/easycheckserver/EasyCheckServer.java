@@ -91,6 +91,8 @@ public class EasyCheckServer {
                     response = parser.getReservesDni(query.get("dni"));
                 } else if (query.containsKey("data")) {
                     response = parser.getReservesDni(query.get("data"));
+                } else if (query.containsKey("servei")) {
+                    response = parser.getReservesServei(query.get("servei"));
                 }
             } else {
                 response = parser.getReserves();

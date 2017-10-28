@@ -6,6 +6,11 @@
 package easycheckserver.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import easycheckserver.model.Reserva;
+import easycheckserver.model.Treballador;
+import easycheckserver.persistencia.GestorPersistencia;
+import java.util.List;
 
 /**
  *
@@ -14,13 +19,22 @@ import com.google.gson.Gson;
 public class JSonParser {
     
     private final Gson gson;
+    private GestorPersistencia gestor;
     
     public JSonParser(){
-        gson = new Gson();
+        gson = new GsonBuilder().setPrettyPrinting().create();
+        gestor = new GestorPersistencia();
     }
     
     public String getReserves() {
         return "";
+    }
+    
+    public String getReservesServei(String idServei) {
+        gestor.open();
+        List<Reserva> llista = gestor.getReservesServei(stringToInt(idServei));
+        gestor.close();
+        return gson.toJson(llista);
     }
 
     public String getReservesQRCode(String qrcode) {
@@ -68,10 +82,21 @@ public class JSonParser {
     }
     
     public String getTreballadorId(String id) {
-        return "";
+        gestor.open();
+        Treballador treballador = gestor.getTreballadorId(stringToInt(id));
+        gestor.close();
+        return gson.toJson(treballador);
     }
     
     public String getTreballadors() {
         return "";
+    }
+    
+    private int stringToInt(String integer) {
+        try {
+            return Integer.parseInt(integer);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
