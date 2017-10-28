@@ -29,10 +29,16 @@ public final class TestClient {
 
     public TestClient() {
         parser = new JSonParser();
-        
-        System.out.println(parser.getReservesServei("3"));
+        System.out.println(obtenirTreballadorId("3"));
+        //System.out.println(parser.getReservesServei("3"));
     }
 
+    public String obtenirTreballadorId(String id){
+        String query = buildQuery("id",id);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador",query);
+        return connectToUrl(url);
+    }
+    
     public String obtenirReserves() {
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserves",null);
         return connectToUrl(url);
