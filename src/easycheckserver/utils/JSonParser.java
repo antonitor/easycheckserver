@@ -89,7 +89,10 @@ public class JSonParser {
     }
     
     public String getTreballadors() {
-        return "";
+        gestor.open();
+        List<Treballador> llista = gestor.getTreballadors();
+        gestor.close();
+        return gson.toJson(llista);
     }
     
     private int stringToInt(String integer) {

@@ -89,6 +89,33 @@ public class GestorPersistencia {
         return treballador;
     }
     
+        public List<Treballador> getTreballadors() {
+        List<Treballador> llista = new ArrayList<>();
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            stm = conn.prepareStatement("SELECT * FROM " + TaulaTreballador.NOM_TAULA);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt(TaulaTreballador.ID);
+                String nom = rs.getString(TaulaTreballador.NOM);
+                String cognom1 = rs.getString(TaulaTreballador.COGNOM1);
+                String cognom2 = rs.getString(TaulaTreballador.COGNOM2);
+                String login = rs.getString(TaulaTreballador.LOGIN);
+                String password = rs.getString(TaulaTreballador.PASSWORD);
+                int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
+                llista.add(new Treballador(id, nom, cognom1, cognom2, login, password, esAdmin, getServeisTreballador(id)));
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": "+ ex.getMessage());
+        } finally {
+            closeStatement(stm);
+        }
+        return llista;
+    }
+   
+    
     public List<Servei> getServeisTreballador(int idTreballador) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
