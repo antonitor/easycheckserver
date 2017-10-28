@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package easycheckserver;
+package easycheckserver.utils;
 
+import easycheckserver.TestClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;

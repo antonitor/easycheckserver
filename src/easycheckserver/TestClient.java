@@ -5,9 +5,9 @@
  */
 package easycheckserver;
 
-import static easycheckserver.NetUtils.buildQuery;
-import static easycheckserver.NetUtils.buildUrl;
-import static easycheckserver.NetUtils.connectToUrl;
+import static easycheckserver.utils.NetUtils.buildQuery;
+import static easycheckserver.utils.NetUtils.buildUrl;
+import static easycheckserver.utils.NetUtils.connectToUrl;
 import easycheckserver.utils.JSonParser;
 import java.net.URL;
 

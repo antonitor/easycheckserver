@@ -8,7 +8,7 @@ package easycheckserver;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
-import static easycheckserver.NetUtils.queryToMap;
+import static easycheckserver.utils.NetUtils.queryToMap;
 import easycheckserver.utils.JSonParser;
 import java.io.IOException;
 import java.io.OutputStream;
