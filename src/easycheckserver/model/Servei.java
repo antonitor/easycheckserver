@@ -32,6 +32,7 @@ public class Servei implements Serializable{
         this.descripcio = descripcio;
         this.id_treballador = idTreb;
         this.data_servei = data_servei;
+        this.hora_inici = hora_inici;
         this.hora_final = hora_final;
         this.llistaReserves = llista;
     }
