@@ -9,6 +9,7 @@ import static easycheckserver.utils.NetUtils.buildQuery;
 import static easycheckserver.utils.NetUtils.buildUrl;
 import static easycheckserver.utils.NetUtils.connectToUrl;
 import easycheckserver.utils.JSonParser;
+import static easycheckserver.utils.NetUtils.doPostRequest;
 import java.net.URL;
 
 
@@ -29,10 +30,24 @@ public final class TestClient {
 
     public TestClient() {
         parser = new JSonParser();
-        System.out.println(obtenirTreballadorId("3"));
+        uptateTreballador();
+        //inserirTreballador();
+        //System.out.println(obtenirTreballadorId("3"));
         //System.out.println(parser.getReservesServei("3"));
     }
 
+    public void uptateTreballador() {        
+        String query = "id=8&nom=xescas&cognom1=pepoooooott&cognom2=cisc&esadmin=0&login=yeye&password=yeska";
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
+        doPostRequest(url, query);
+    }
+    
+    public void inserirTreballador() {        
+        String query = "nom=xesc&cognom1=pep&cognom2=cisc&esadmin=0&login=yeye&password=yeska";
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
+        doPostRequest(url, query);
+    }
+    
     public String obtenirTreballadorId(String id){
         String query = buildQuery("id",id);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador",query);

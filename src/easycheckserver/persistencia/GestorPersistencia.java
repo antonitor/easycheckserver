@@ -17,9 +17,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -225,7 +228,7 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA + " WHERE " + TaulaReserva.LOCALITZADOR + " LIKE '" + loc+"'");
+            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA + " WHERE " + TaulaReserva.LOCALITZADOR + " LIKE '" + loc + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
@@ -287,7 +290,7 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT " 
+            stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
@@ -322,7 +325,7 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println("ERROR CODE: " + ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();            
+            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -429,7 +432,7 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + " = '" + data+"'");
+            stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + " = '" + data + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
@@ -453,7 +456,7 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + "= '" + data + "' AND " + TaulaServeis.HORAINICI + " = '" + hora+"'");
+            stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + "= '" + data + "' AND " + TaulaServeis.HORAINICI + " = '" + hora + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
@@ -516,48 +519,64 @@ public class GestorPersistencia {
     }
 
     public int insertTreballador(String nom, String cognom1, String cognom2, String admin, String login, String password) {
+        open();
+        System.out.println("INSERINT TREBaLLADOR " + nom);
         int rowsUpdated = 0;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
+        Statement stm = null;
+        String insertQuery = "INSERT INTO " + TaulaTreballador.NOM_TAULA + "("
+                + TaulaTreballador.NOM + ", "
+                + TaulaTreballador.COGNOM1 + ", "
+                + TaulaTreballador.COGNOM2 + ", "
+                + TaulaTreballador.ADMIN + ", "
+                + TaulaTreballador.LOGIN + ", "
+                + TaulaTreballador.PASSWORD
+                + ") VALUES ('" + nom + "', '" + cognom1 + "', '" + cognom2 + "', " + admin + ", '" + login + "', '" + password + "')";
+
         try {
-            stm = conn.prepareStatement("INSERT INTO " + TaulaTreballador.NOM_TAULA + "("
-                    + TaulaTreballador.NOM + ", "
-                    + TaulaTreballador.COGNOM1 + ", "
-                    + TaulaTreballador.COGNOM2 + ", "
-                    + TaulaTreballador.ADMIN + ", "
-                    + TaulaTreballador.LOGIN + ", "
-                    + TaulaTreballador.PASSWORD + ", "
-                    + ") VALUES ('" + nom + "', '" + cognom1 + "', '" + cognom2 + "', " + admin + ", '" + login + "', '" + password + "')"
-            );
-            rowsUpdated = stm.executeUpdate();
+            stm = conn.createStatement();
+            System.out.println(insertQuery);
+            rowsUpdated = stm.executeUpdate(insertQuery);
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-        } finally {
-            closeStatement(stm);
+        } finally {            
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
+            System.out.println("Treballadors inserits: " + rowsUpdated);
+            return rowsUpdated;
         }
-        return rowsUpdated;
     }
 
     public int updateTreballador(String id, String nom, String cognom1, String cognom2, String admin, String login, String password) {
+        open();
         int rowsUpdated = 0;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        try {
-            stm = conn.prepareStatement("UPDATE " + TaulaTreballador.NOM_TAULA + " SET "
+        Statement stm = null;
+        String updateSQL = "UPDATE " + TaulaTreballador.NOM_TAULA + " SET "
                     + TaulaTreballador.NOM + "='" + nom + "'" + ", "
-                    + TaulaTreballador.COGNOM1 + "='" + nom + "'" + ", "
-                    + TaulaTreballador.COGNOM2 + "='" + nom + "'" + ", "
-                    + TaulaTreballador.ADMIN + "='" + nom + "'" + ", "
-                    + TaulaTreballador.LOGIN + "='" + nom + "'" + ", "
-                    + TaulaTreballador.PASSWORD + "='" + nom + "'" + ", "
-                    + " WHERE " + TaulaTreballador.ID + "=" + id);
-            rowsUpdated = stm.executeUpdate();
+                    + TaulaTreballador.COGNOM1 + "='" + cognom1 + "'" + ", "
+                    + TaulaTreballador.COGNOM2 + "='" + cognom2 + "'" + ", "
+                    + TaulaTreballador.ADMIN + "='" + admin + "'" + ", "
+                    + TaulaTreballador.LOGIN + "='" + login + "'" + ", "
+                    + TaulaTreballador.PASSWORD + "='" + password + "'"
+                    + " WHERE " + TaulaTreballador.ID + "=" + id;
+        try {
+            stm = conn.createStatement();
+            rowsUpdated = stm.executeUpdate(updateSQL);
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-        } finally {
-            closeStatement(stm);
+        } finally {            
+             if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
         }
-        return rowsUpdated;
-    }
-
+        System.out.println("Treballadors actualitzats: " + rowsUpdated);
+        return rowsUpdated;    }
 }
