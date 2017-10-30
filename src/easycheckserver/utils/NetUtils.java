@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  */
 public class NetUtils {
 
-    public static String connectToUrl(URL url) {
+    public static String goGetRequest(URL url) {
         String responseBody = "";
         try {
             URLConnection connection = url.openConnection();

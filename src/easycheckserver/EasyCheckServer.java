@@ -39,7 +39,7 @@ public class EasyCheckServer {
         parser = new JSonParser();
         gestor = new GestorPersistencia();
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/easycheckapi/reserves", new ReservesHandler());
+        server.createContext("/easycheckapi/reserva", new ReservesHandler());
         server.createContext("/easycheckapi/servei", new ServeisHandler());
         server.createContext("/easycheckapi/treballador", new TreballadorsHandler());
         server.setExecutor(null); // creates a default executor
@@ -106,8 +106,6 @@ public class EasyCheckServer {
             } else {
                 response = parser.getReserves();
             }
-        } else if (requestMethod.equals("POST")) {
-            System.out.println("HTTP POST REQUEST: " + uri);
         }
         return response;
     }
@@ -154,8 +152,8 @@ public class EasyCheckServer {
             }
         } else if (requestMethod.equals("POST")) {
             query = getPostQuery(t);       
-            if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
-                response = "" + gestor.updateTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("esadmin"), query.get("login"), query.get("password"));
+            if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("esadmin") && query.containsKey("login")) {
+                response = "" + gestor.updateTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("esadmin"), query.get("login"));
             } else if (query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
                 response = "" + gestor.insertTreballador(query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("esadmin"), query.get("login"), query.get("password"));
             } else {

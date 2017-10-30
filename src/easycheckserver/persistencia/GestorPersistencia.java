@@ -551,7 +551,7 @@ public class GestorPersistencia {
         }
     }
 
-    public int updateTreballador(String id, String nom, String cognom1, String cognom2, String admin, String login, String password) {
+    public int updateTreballador(String id, String nom, String cognom1, String cognom2, String admin, String login) {
         open();
         int rowsUpdated = 0;
         Statement stm = null;
@@ -560,8 +560,7 @@ public class GestorPersistencia {
                     + TaulaTreballador.COGNOM1 + "='" + cognom1 + "'" + ", "
                     + TaulaTreballador.COGNOM2 + "='" + cognom2 + "'" + ", "
                     + TaulaTreballador.ADMIN + "='" + admin + "'" + ", "
-                    + TaulaTreballador.LOGIN + "='" + login + "'" + ", "
-                    + TaulaTreballador.PASSWORD + "='" + password + "'"
+                    + TaulaTreballador.LOGIN + "='" + login + "'"
                     + " WHERE " + TaulaTreballador.ID + "=" + id;
         try {
             stm = conn.createStatement();
