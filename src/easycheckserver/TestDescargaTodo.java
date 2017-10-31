@@ -10,19 +10,14 @@ import com.google.gson.reflect.TypeToken;
 import easycheckserver.model.Reserva;
 import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
-import static easycheckserver.utils.NetUtils.buildQuery;
-import easycheckserver.utils.JSonParser;
-import static easycheckserver.utils.NetUtils.doPostRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ProcessBuilder.Redirect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -32,74 +27,19 @@ import java.util.logging.Logger;
  *
  * @author Toni
  */
-public final class TestClient {
-
+public class TestDescargaTodo {
+    
     private static final String BASE_URL = "localhost";
     private static final int PORT = 8080;
-    private JSonParser parser;
-
+    
     public static void main(String[] args) {
-        TestClient test = new TestClient();
+        TestDescargaTodo test = new TestDescargaTodo();
     }
-
-    public TestClient() {
-
+    
+    public TestDescargaTodo(){
         obtenirTreballadorsDelServer();
-        //parser = new JSonParser();
-        //inserirTreballador("toni", "torres", "mari", "1", "jacdemanec", "xxx" );
-        //inserirTreballador("toni", "torres", "mari", "1", "jacdemanec", "xxx" );
-        //actualitzarTreballador(1,"pep", "we", "dssd", "0", "sddsdsd");
-        //System.out.println(obtenirTreballadors());
-        //System.out.println(obtenirTreballadorId("1"));
     }
-
-    public void actualitzarTreballador(int id, String nom, String cognom1, String cognom2, String esadmin, String login) {
-        String query = "id=" + id + "&nom=" + nom + "&cognom1=" + cognom1 + "&cognom2=" + cognom2 + "&esadmin=" + esadmin + "&login=" + login;
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        doPostRequest(url, query);
-    }
-
-    public void inserirTreballador(String nom, String cognom1, String cognom2, String esadmin, String login, String password) {
-        String query = "nom=" + nom + "&cognom1=" + cognom1 + "&cognom2=" + cognom2 + "&esadmin=" + esadmin + "&login=" + login + "&password=" + password;
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        doPostRequest(url, query);
-    }
-
-    public String obtenirTreballadors() {
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        System.out.println(url.toString());
-        return doGetRequest(url);
-    }
-
-    public String obtenirTreballadorId(String id) {
-        String query = buildQuery("id", id);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", query);
-        return doGetRequest(url);
-    }
-
-    public String obtenirReserves() {
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserves", null);
-        return doGetRequest(url);
-    }
-
-    public String obtenirReservesDni(String dni) {
-        String query = buildQuery("dni", dni);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserves", query);
-        return doGetRequest(url);
-    }
-
-    public String obtenirReservesData(String data) {
-        String query = buildQuery("data", data);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserves", query);
-        return doGetRequest(url);
-    }
-
-    public String obtenirReservesDniData(String dni, String data) {
-        String query = buildQuery("dni", dni, "data", data);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserves", query);
-        return doGetRequest(url);
-    }
-
+    
     
     public String doGetRequest(URL url) {
         String responseBody = "";
@@ -117,10 +57,12 @@ public final class TestClient {
     public URL buildUrl(String host, int port, String path, String query) {
         try {
             return new URI("http", null, host, port, path, query, null).toURL();
-        } catch (URISyntaxException | MalformedURLException ex) {
-            Logger.getLogger(TestClient.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(TestDescargaTodo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(TestDescargaTodo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
     
     public List<Treballador> obtenirTreballadorsDelServer() {
@@ -136,6 +78,7 @@ public final class TestClient {
             System.out.println(treb.getNom());
             System.out.println(treb.getCognom1());
             System.out.println(treb.getCognom2());
+            System.out.println(treb.getDni());
             System.out.println(treb.getLogin());
             ArrayList<Servei> llistaServeis = (ArrayList<Servei>) treb.getLlistaServeis();
             for (Servei serv : llistaServeis) {
@@ -155,5 +98,4 @@ public final class TestClient {
 
         return llistaDeTreballadors;
     }
-
 }

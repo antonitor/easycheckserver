@@ -78,10 +78,11 @@ public class GestorPersistencia {
                 String nom = rs.getString(TaulaTreballador.NOM);
                 String cognom1 = rs.getString(TaulaTreballador.COGNOM1);
                 String cognom2 = rs.getString(TaulaTreballador.COGNOM2);
+                String dni = rs.getString(TaulaTreballador.DNI);
                 String login = rs.getString(TaulaTreballador.LOGIN);
                 String password = rs.getString(TaulaTreballador.PASSWORD);
                 int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
-                treballador = new Treballador(id, nom, cognom1, cognom2, login, password, esAdmin, getServeisTreballador(id));
+                treballador = new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id));
             }
 
         } catch (SQLException ex) {
@@ -103,11 +104,12 @@ public class GestorPersistencia {
                 int id = rs.getInt(TaulaTreballador.ID);
                 String nom = rs.getString(TaulaTreballador.NOM);
                 String cognom1 = rs.getString(TaulaTreballador.COGNOM1);
-                String cognom2 = rs.getString(TaulaTreballador.COGNOM2);
+                String cognom2 = rs.getString(TaulaTreballador.COGNOM2);                
+                String dni = rs.getString(TaulaTreballador.DNI);
                 String login = rs.getString(TaulaTreballador.LOGIN);
                 String password = rs.getString(TaulaTreballador.PASSWORD);
                 int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
-                llista.add(new Treballador(id, nom, cognom1, cognom2, login, password, esAdmin, getServeisTreballador(id)));
+                llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));
             }
 
         } catch (SQLException ex) {
@@ -518,7 +520,7 @@ public class GestorPersistencia {
         return llista;
     }
 
-    public int insertTreballador(String nom, String cognom1, String cognom2, String admin, String login, String password) {
+    public int insertTreballador(String nom, String cognom1, String cognom2, String dni, String admin, String login, String password) {
         open();
         System.out.println("INSERINT TREBaLLADOR " + nom);
         int rowsUpdated = 0;
@@ -527,10 +529,11 @@ public class GestorPersistencia {
                 + TaulaTreballador.NOM + ", "
                 + TaulaTreballador.COGNOM1 + ", "
                 + TaulaTreballador.COGNOM2 + ", "
+                + TaulaTreballador.DNI + ", "
                 + TaulaTreballador.ADMIN + ", "
                 + TaulaTreballador.LOGIN + ", "
                 + TaulaTreballador.PASSWORD
-                + ") VALUES ('" + nom + "', '" + cognom1 + "', '" + cognom2 + "', " + admin + ", '" + login + "', '" + password + "')";
+                + ") VALUES ('" + nom + "', '" + cognom1 + "', '" + cognom2 + "', '" + dni + "', " + admin + ", '" + login + "', '" + password + "')";
 
         try {
             stm = conn.createStatement();
@@ -551,15 +554,16 @@ public class GestorPersistencia {
         }
     }
 
-    public int updateTreballador(String id, String nom, String cognom1, String cognom2, String admin, String login) {
+    public int updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
         open();
         int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaTreballador.NOM_TAULA + " SET "
-                    + TaulaTreballador.NOM + "='" + nom + "'" + ", "
-                    + TaulaTreballador.COGNOM1 + "='" + cognom1 + "'" + ", "
-                    + TaulaTreballador.COGNOM2 + "='" + cognom2 + "'" + ", "
-                    + TaulaTreballador.ADMIN + "='" + admin + "'" + ", "
+                    + TaulaTreballador.NOM + "='" + nom + "', "
+                    + TaulaTreballador.COGNOM1 + "='" + cognom1 + "', "
+                    + TaulaTreballador.COGNOM2 + "='" + cognom2 + "', "
+                    + TaulaTreballador.DNI + "='" + dni + "', "
+                    + TaulaTreballador.ADMIN + "='" + admin + "', "
                     + TaulaTreballador.LOGIN + "='" + login + "'"
                     + " WHERE " + TaulaTreballador.ID + "=" + id;
         try {

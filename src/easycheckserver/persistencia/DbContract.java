@@ -20,6 +20,7 @@ public class DbContract {
         public final static String NOM = "nom";
         public final static String COGNOM1 = "cognom1";
         public final static String COGNOM2 = "cognom2";
+        public final static String DNI = "dni";
         public final static String ADMIN = "esAdmin";
         public final static String LOGIN = "login";
         public final static String PASSWORD = "password";  
