@@ -5,7 +5,7 @@
  */
 package easycheckserver.utils;
 
-import easycheckserver.TestClient;
+import easycheckserver.test.TestClient;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;

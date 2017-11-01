@@ -21,8 +21,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -35,6 +33,7 @@ public class GestorPersistencia {
     private final String URL = "jdbc:postgresql://localhost:5432/easycheck";
     private final String USER = "marcarniuser";
     private final String PASS = "marcarnipass";
+    private Object TaulaServei;
 
     public GestorPersistencia() {
         try {
@@ -104,7 +103,7 @@ public class GestorPersistencia {
                 int id = rs.getInt(TaulaTreballador.ID);
                 String nom = rs.getString(TaulaTreballador.NOM);
                 String cognom1 = rs.getString(TaulaTreballador.COGNOM1);
-                String cognom2 = rs.getString(TaulaTreballador.COGNOM2);                
+                String cognom2 = rs.getString(TaulaTreballador.COGNOM2);
                 String dni = rs.getString(TaulaTreballador.DNI);
                 String login = rs.getString(TaulaTreballador.LOGIN);
                 String password = rs.getString(TaulaTreballador.PASSWORD);
@@ -541,7 +540,7 @@ public class GestorPersistencia {
             rowsUpdated = stm.executeUpdate(insertQuery);
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-        } finally {            
+        } finally {
             if (stm != null) {
                 try {
                     stm.close();
@@ -559,20 +558,20 @@ public class GestorPersistencia {
         int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaTreballador.NOM_TAULA + " SET "
-                    + TaulaTreballador.NOM + "='" + nom + "', "
-                    + TaulaTreballador.COGNOM1 + "='" + cognom1 + "', "
-                    + TaulaTreballador.COGNOM2 + "='" + cognom2 + "', "
-                    + TaulaTreballador.DNI + "='" + dni + "', "
-                    + TaulaTreballador.ADMIN + "='" + admin + "', "
-                    + TaulaTreballador.LOGIN + "='" + login + "'"
-                    + " WHERE " + TaulaTreballador.ID + "=" + id;
+                + TaulaTreballador.NOM + "='" + nom + "', "
+                + TaulaTreballador.COGNOM1 + "='" + cognom1 + "', "
+                + TaulaTreballador.COGNOM2 + "='" + cognom2 + "', "
+                + TaulaTreballador.DNI + "='" + dni + "', "
+                + TaulaTreballador.ADMIN + "='" + admin + "', "
+                + TaulaTreballador.LOGIN + "='" + login + "'"
+                + " WHERE " + TaulaTreballador.ID + "=" + id;
         try {
             stm = conn.createStatement();
             rowsUpdated = stm.executeUpdate(updateSQL);
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-        } finally {            
-             if (stm != null) {
+        } finally {
+            if (stm != null) {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
@@ -581,5 +580,31 @@ public class GestorPersistencia {
             close();
         }
         System.out.println("Treballadors actualitzats: " + rowsUpdated);
-        return rowsUpdated;    }
+        return rowsUpdated;
+    }
+    
+    public int assignarTreballador(String idServei, String idTreballador) {
+        open();
+        int rowsUpdated = 0;
+        Statement stm = null;
+        String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
+                + TaulaServeis.ID_TREBALLADOR + "=" + idTreballador
+                + " WHERE " + TaulaServeis.ID + "=" + idServei;
+        try {
+            stm = conn.createStatement();
+            rowsUpdated = stm.executeUpdate(updateSQL);
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
+        }
+        System.out.println("Treballadors actualitzats: " + rowsUpdated);
+        return rowsUpdated;
+    }
 }
