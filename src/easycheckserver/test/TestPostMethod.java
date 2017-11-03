@@ -5,7 +5,6 @@
  */
 package easycheckserver.test;
 
-import easycheckserver.test.TestDescargaTodo;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -34,11 +33,23 @@ public class TestPostMethod {
     }
 
     public TestPostMethod() {
-        assignarTreballador("7", "3");
+        borrarTreballador("4");
+        //assignarTreballador("7", "3");
         //inserirTreballador("Carles", "Puig", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
         //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
     }
 
+    public String borrarTreballador(String idTreballador) {
+        String response = "";
+        String query = buildQueryBorrarTreballador(idTreballador);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
+        response = doPostRequest(url, query);
+        if (!response.equals("0")) {
+            System.out.println("Borrat treballador " + idTreballador);
+        }
+        return response;
+    }
+    
     public String assignarTreballador(String idServei, String idTreballador) {
         String response = "";
         String query = buildQueryAssignarTreballador(idServei, idTreballador);
@@ -136,5 +147,9 @@ public class TestPostMethod {
 
     public String buildQueryActualitzarTreballador(int id, String nom, String cognom1, String cognom2, String dni, String login, String password, int esadmin) {
         return "id=" + id + "&nom=" + nom + "&cognom1=" + cognom1 + "&cognom2=" + cognom2 + "&dni=" + dni + "&esadmin=" + esadmin + "&login=" + login + "&password=" + password;
+    }
+
+    private String buildQueryBorrarTreballador(String idTreballador) {
+        return "borrarid=" + idTreballador;
     }
 }

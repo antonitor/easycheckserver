@@ -5,9 +5,14 @@
  */
 package easycheckserver;
 
+import com.sun.net.httpserver.Authenticator;
+import com.sun.net.httpserver.BasicAuthenticator;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
+import static easycheckserver.EasyCheckServer.gestor;
+import easycheckserver.model.Treballador;
 import easycheckserver.persistencia.GestorPersistencia;
 import static easycheckserver.utils.NetUtils.queryToMap;
 import easycheckserver.utils.JSonParser;
@@ -19,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +37,7 @@ public class EasyCheckServer {
 
     public static JSonParser parser;
     public static GestorPersistencia gestor;
+    public static LoginAuthenticator authenticator;
 
     private EasyCheckServer() {
     }
@@ -38,6 +45,8 @@ public class EasyCheckServer {
     public static void main(String[] args) throws Exception {
         parser = new JSonParser();
         gestor = new GestorPersistencia();
+        authenticator = new LoginAuthenticator("/easycheckapi");
+        
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/easycheckapi/reserva", new ReservesHandler());
         server.createContext("/easycheckapi/servei", new ServeisHandler());
@@ -74,12 +83,26 @@ public class EasyCheckServer {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
+            System.out.println(t.getRequestHeaders());
             String response = handleTreballadorRequest(t);
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
         }
+    }
+    
+    static class LoginHandler implements HttpHandler {
+
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            String response = "Hello " +  t.getPrincipal().getUsername();
+            t.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+        
     }
 
     private static String handleReservesRequest(HttpExchange t) {
@@ -152,17 +175,19 @@ public class EasyCheckServer {
             }
         } else if (requestMethod.equals("POST")) {
             System.out.println("HTTP POST REQUEST: " + uri);
-            query = getPostQuery(t);       
-            if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login")) {
-                response = "" + gestor.updateTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"),query.get("dni"), query.get("esadmin"), query.get("login"));
+            query = getPostQuery(t);
+            if (query.containsKey("borrarid")) {
+                response = "" + gestor.borrarTreballador(query.get("borrarid"));
+            } else if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login")) {
+                response = "" + gestor.updateTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"));
             } else if (query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
-                response = "" + gestor.insertTreballador(query.get("nom"), query.get("cognom1"), query.get("cognom2"),query.get("dni"), query.get("esadmin"), query.get("login"), query.get("password"));
+                response = "" + gestor.insertTreballador(query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"), query.get("password"));
             } else if (query.containsKey("idservei") && query.containsKey("idtreballador")) {
                 response = "" + gestor.assignarTreballador(query.get("idservei"), query.get("idtreballador"));
             } else {
                 response = "0";
             }
-        } 
+        }
         return response;
     }
 
@@ -181,4 +206,26 @@ public class EasyCheckServer {
         return query;
     }
 
+
+
 }
+
+    class LoginAuthenticator extends BasicAuthenticator {
+        public LoginAuthenticator(String string) {
+            super(string);
+        }
+
+        @Override
+        public boolean checkCredentials(String user, String pass) {
+            boolean login = false;
+            List<Treballador> llistaUsuaris = gestor.getTreballadors();
+            for (Treballador treb : llistaUsuaris) {
+                if (treb.getNom().equals(user)) {
+                    if (treb.getPassword().equals(pass)) {
+                        login = true;
+                    }
+                }
+            }
+            return login;
+        }
+    }

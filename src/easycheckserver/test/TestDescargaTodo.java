@@ -13,12 +13,14 @@ import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -44,10 +46,18 @@ public class TestDescargaTodo {
     public String doGetRequest(URL url) {
         String responseBody = "";
         try {
-            URLConnection connection = url.openConnection();
-            InputStream response = connection.getInputStream();
-            Scanner scanner = new Scanner(response);
-            responseBody = scanner.useDelimiter("\\A").next();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            String userCredentials = "Antoni:xxx";
+            String basicAuth = Base64.getEncoder().encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8));            
+            connection.setRequestProperty ("Authorization", "Basic "+ userCredentials);
+            connection.setRequestMethod("GET");
+            int responseCode = connection.getResponseCode();
+            System.out.println(responseCode);
+            if (responseCode == 200) {
+                InputStream response = connection.getInputStream();
+                Scanner scanner = new Scanner(response);
+                responseBody = scanner.useDelimiter("\\A").next();
+            }
         } catch (IOException ex) {
             Logger.getLogger(TestClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -84,7 +94,7 @@ public class TestDescargaTodo {
                 System.out.println("\t- Servei id: " + serv.getId());
                 System.out.println("\t" + serv.getDescripcio());
                 System.out.println("\t" + serv.getData_servei());
-                System.out.println("\t" + serv.getHora_inici() + " - "  + serv.getHora_final());
+                System.out.println("\t" + serv.getHora_inici() + " - " + serv.getHora_final());
                 for (Reserva res : serv.getLlistaReserves()) {
                     System.out.println("\t\t - Reserva id: " + res.getId());
                     System.out.println("\t\t " + res.getNom_titular() + " " + res.getCognom1_titular() + " " + res.getCognom2_titular());

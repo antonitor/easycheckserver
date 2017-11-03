@@ -604,7 +604,31 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Treballadors actualitzats: " + rowsUpdated);
+        System.out.println("Assignant treballador " + idTreballador +" a servei " + idServei + " -> " + (rowsUpdated>=1?" Correcte! ":" Error!"));
+        return rowsUpdated;
+    }
+    
+    public int borrarTreballador(String idTreballador) {
+        open();
+        int rowsUpdated = 0;
+        Statement stm = null;
+        String updateSQL = "DELETE FROM " + TaulaTreballador.NOM_TAULA
+                + " WHERE " + TaulaTreballador.ID + "=" + idTreballador;
+        try {
+            stm = conn.createStatement();
+            rowsUpdated = stm.executeUpdate(updateSQL);
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
+        }
+        System.out.println("Borrant treballador: " + idTreballador + " -> " + (rowsUpdated>=1?" Correcte! ":" Error!"));
         return rowsUpdated;
     }
 }
