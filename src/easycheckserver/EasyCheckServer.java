@@ -210,7 +210,8 @@ public class EasyCheckServer {
             Map<String, String> query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("user") && query.containsKey("pass")) {
-                response = "" + gestor.login(query.get("user"), query.get("pass"));
+                response = gestor.login(query.get("user"), query.get("pass"));
+                System.out.println("login " + response);
             }
         }
         return response;

@@ -33,10 +33,47 @@ public class TestPostMethod {
     }
 
     public TestPostMethod() {
-        borrarTreballador("4");
+        //inserirServei("Mallorca - Menorca", "11/11/2017","10:00","11:00",1);
+        //actualitzarServei(11,"Mallorca - Menorca", "11/11/2017","10:00","21:00",1);
+        //borrarServei(13);
+        //borrarTreballador("4");
         //assignarTreballador("7", "3");
         //inserirTreballador("Carles", "Puig", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
         //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
+    }
+
+  
+    public String borrarServei(int idServei) {
+        String response = "";
+        String query = buildQueryBorrarServei(idServei);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
+        response = doPostRequest(url, query);
+        if (!response.equals("0")) {
+            System.out.println("Borrat servei " + idServei);
+        }
+        return response;
+    }
+
+    public String inserirServei(String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
+        String response = "";
+        String query = buildQueryInserirServei(descripcio, dataservei, horaInici, horaFinal, idTreballador);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
+        response = doPostRequest(url, query);
+        if (!response.equals("0")) {
+            System.out.println("Inserit servei " + descripcio);
+        }
+        return response;
+    }
+
+    public String actualitzarServei(int id, String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
+        String response = "";
+        String query = buildQueryActualitzarServei(id, descripcio, dataservei, horaInici, horaFinal, idTreballador);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
+        response = doPostRequest(url, query);
+        if (!response.equals("0")) {
+            System.out.println("Actualitzat servei " + descripcio + " amb id " + id);
+        }
+        return response;
     }
 
     public String borrarTreballador(String idTreballador) {
@@ -49,7 +86,7 @@ public class TestPostMethod {
         }
         return response;
     }
-    
+
     public String assignarTreballador(String idServei, String idTreballador) {
         String response = "";
         String query = buildQueryAssignarTreballador(idServei, idTreballador);
@@ -152,4 +189,17 @@ public class TestPostMethod {
     private String buildQueryBorrarTreballador(String idTreballador) {
         return "borrarid=" + idTreballador;
     }
+
+    private String buildQueryBorrarServei(int idServei) {
+        return "borrarid=" + idServei;
+    }
+
+    public String buildQueryActualitzarServei(int id, String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
+        return "id=" + id + "&descripcio=" + descripcio + "&dataservei=" + dataservei + "&horainici=" + horaInici + "&horafinal=" + horaFinal + "&idtreballador=" + idTreballador;
+    }
+
+    public String buildQueryInserirServei(String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
+        return "descripcio=" + descripcio + "&dataservei=" + dataservei + "&horainici=" + horaInici + "&horafinal=" + horaFinal + "&idtreballador=" + idTreballador;
+    }
+    
 }

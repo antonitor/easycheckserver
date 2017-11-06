@@ -717,14 +717,14 @@ public class GestorPersistencia {
         return rowsUpdated;
     }
 
-    public int login(String user, String password) {
-        int response = 0;
+    public String login(String user, String password) {
+        String response = "0";
         List<Treballador> llista = getTreballadors();
         for (Treballador treb : llista) {
             if (treb.getLogin().equals(user)){
-                response = 1;
+                response = "1";
                 if (treb.getPassword().equals(password)) {
-                    response = 2;
+                    response = "2";
                     break;
                 }
             }
