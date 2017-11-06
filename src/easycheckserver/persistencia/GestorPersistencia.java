@@ -582,7 +582,7 @@ public class GestorPersistencia {
         System.out.println("Treballadors actualitzats: " + rowsUpdated);
         return rowsUpdated;
     }
-    
+
     public int assignarTreballador(String idServei, String idTreballador) {
         open();
         int rowsUpdated = 0;
@@ -604,10 +604,10 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Assignant treballador " + idTreballador +" a servei " + idServei + " -> " + (rowsUpdated>=1?" Correcte! ":" Error!"));
+        System.out.println("Assignant treballador " + idTreballador + " a servei " + idServei + " -> " + (rowsUpdated >= 1 ? " Correcte! " : " Error!"));
         return rowsUpdated;
     }
-    
+
     public int borrarTreballador(String idTreballador) {
         open();
         int rowsUpdated = 0;
@@ -628,7 +628,108 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Borrant treballador: " + idTreballador + " -> " + (rowsUpdated>=1?" Correcte! ":" Error!"));
+        System.out.println("Borrant treballador: " + idTreballador + " -> " + (rowsUpdated >= 1 ? " Correcte! " : " Error!"));
         return rowsUpdated;
     }
+
+    public int insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        open();
+        System.out.println("INSERINT SERVEI " + descripcio);
+        int rowsUpdated = 0;
+        Statement stm = null;
+        String insertQuery = "INSERT INTO " + TaulaServeis.NOM_TAULA + "("
+                + TaulaServeis.DESCRIPCIO + ", "
+                + TaulaServeis.DATASERVEI + ", "
+                + TaulaServeis.HORAINICI + ", "
+                + TaulaServeis.HORAFINAL + ", "
+                + TaulaServeis.ID_TREBALLADOR
+                + ") VALUES ('" + descripcio + "', '" + dataServei + "', '" + horaInici + "', '" + horaFinal + "', " + idTreballador + ")";
+
+        try {
+            stm = conn.createStatement();
+            System.out.println(insertQuery);
+            rowsUpdated = stm.executeUpdate(insertQuery);
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
+            System.out.println("Serveis inserits: " + rowsUpdated);
+            return rowsUpdated;
+        }
+    }
+
+    public int updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        open();
+        int rowsUpdated = 0;
+        Statement stm = null;
+        String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
+                + TaulaServeis.DESCRIPCIO + "='" + descripcio + "', "
+                + TaulaServeis.DATASERVEI + "='" + dataServei + "', "
+                + TaulaServeis.HORAINICI + "='" + horaInici + "', "
+                + TaulaServeis.HORAFINAL + "='" + horaFinal + "', "
+                + TaulaServeis.ID_TREBALLADOR + "=" + idTreballador
+                + " WHERE " + TaulaServeis.ID + "=" + id;
+        try {
+            stm = conn.createStatement();
+            rowsUpdated = stm.executeUpdate(updateSQL);
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
+        }
+        System.out.println("Serveis actualitzats: " + rowsUpdated);
+        return rowsUpdated;
+    }
+
+    public int borrarServei(String idServei) {
+        open();
+        int rowsUpdated = 0;
+        Statement stm = null;
+        String updateSQL = "DELETE FROM " + TaulaServeis.NOM_TAULA
+                + " WHERE " + TaulaServeis.ID + "=" + idServei;
+        try {
+            stm = conn.createStatement();
+            rowsUpdated = stm.executeUpdate(updateSQL);
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                }
+            }
+            close();
+        }
+        System.out.println("Borrant servei: " + idServei + " -> " + (rowsUpdated >= 1 ? " Correcte! " : " Error!"));
+        return rowsUpdated;
+    }
+
+    public int login(String user, String password) {
+        int response = 0;
+        List<Treballador> llista = getTreballadors();
+        for (Treballador treb : llista) {
+            if (treb.getLogin().equals(user)){
+                response = 1;
+                if (treb.getPassword().equals(password)) {
+                    response = 2;
+                    break;
+                }
+            }
+        }
+        return response;
+    }
+
 }

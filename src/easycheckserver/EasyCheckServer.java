@@ -46,11 +46,12 @@ public class EasyCheckServer {
         parser = new JSonParser();
         gestor = new GestorPersistencia();
         authenticator = new LoginAuthenticator("/easycheckapi");
-        
+
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/easycheckapi/reserva", new ReservesHandler());
         server.createContext("/easycheckapi/servei", new ServeisHandler());
         server.createContext("/easycheckapi/treballador", new TreballadorsHandler());
+        server.createContext("/easycheckapi/login", new LoginHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
@@ -91,18 +92,18 @@ public class EasyCheckServer {
             os.close();
         }
     }
-    
+
     static class LoginHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            String response = "Hello " +  t.getPrincipal().getUsername();
+            String response = handleLoginRequest(t);
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
         }
-        
+
     }
 
     private static String handleReservesRequest(HttpExchange t) {
@@ -156,7 +157,16 @@ public class EasyCheckServer {
                 response = parser.getServeis();
             }
         } else if (requestMethod.equals("POST")) {
+            query = getPostQuery(t);
             System.out.println("HTTP POST REQUEST: " + uri);
+            System.out.println("POST Query: " + query);
+            if (query.containsKey("id") && query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
+                response = "" + gestor.updateServei(query.get("id"), query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
+            } else if (query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
+                response = "" + gestor.insertServei(query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
+            } else if (query.containsKey("borrarid")) {
+                response = "" + gestor.borrarServei(query.get("borrarid"));
+            }
         }
         return response;
     }
@@ -176,6 +186,7 @@ public class EasyCheckServer {
         } else if (requestMethod.equals("POST")) {
             System.out.println("HTTP POST REQUEST: " + uri);
             query = getPostQuery(t);
+            System.out.println("POST Query: " + query);
             if (query.containsKey("borrarid")) {
                 response = "" + gestor.borrarTreballador(query.get("borrarid"));
             } else if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login")) {
@@ -186,6 +197,20 @@ public class EasyCheckServer {
                 response = "" + gestor.assignarTreballador(query.get("idservei"), query.get("idtreballador"));
             } else {
                 response = "0";
+            }
+        }
+        return response;
+    }
+
+    private static String handleLoginRequest(HttpExchange t) {
+        String response = "";
+        String requestMethod = t.getRequestMethod();
+        if (requestMethod.equals("POST")) {
+            System.out.println("HTTP POST REQUEST: " + t.getRequestURI());
+            Map<String, String> query = getPostQuery(t);
+            System.out.println("POST Query: " + query);
+            if (query.containsKey("user") && query.containsKey("pass")) {
+                response = "" + gestor.login(query.get("user"), query.get("pass"));
             }
         }
         return response;
@@ -206,26 +231,25 @@ public class EasyCheckServer {
         return query;
     }
 
-
-
 }
 
-    class LoginAuthenticator extends BasicAuthenticator {
-        public LoginAuthenticator(String string) {
-            super(string);
-        }
+class LoginAuthenticator extends BasicAuthenticator {
 
-        @Override
-        public boolean checkCredentials(String user, String pass) {
-            boolean login = false;
-            List<Treballador> llistaUsuaris = gestor.getTreballadors();
-            for (Treballador treb : llistaUsuaris) {
-                if (treb.getNom().equals(user)) {
-                    if (treb.getPassword().equals(pass)) {
-                        login = true;
-                    }
+    public LoginAuthenticator(String string) {
+        super(string);
+    }
+
+    @Override
+    public boolean checkCredentials(String user, String pass) {
+        boolean login = false;
+        List<Treballador> llistaUsuaris = gestor.getTreballadors();
+        for (Treballador treb : llistaUsuaris) {
+            if (treb.getNom().equals(user)) {
+                if (treb.getPassword().equals(pass)) {
+                    login = true;
                 }
             }
-            return login;
         }
+        return login;
     }
+}
