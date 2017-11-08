@@ -5,6 +5,7 @@
  */
 package easycheckserver.persistencia;
 
+import easycheckserver.model.Client;
 import easycheckserver.model.Reserva;
 import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
@@ -157,7 +158,8 @@ public class GestorPersistencia {
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -203,8 +205,8 @@ public class GestorPersistencia {
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
-            }
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));            }
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
@@ -260,7 +262,8 @@ public class GestorPersistencia {
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -306,7 +309,8 @@ public class GestorPersistencia {
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));            
             }
 
         } catch (SQLException ex) {
@@ -352,7 +356,8 @@ public class GestorPersistencia {
                 String telf = rs.getString(TaulaClient.TELF);
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -401,7 +406,8 @@ public class GestorPersistencia {
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -451,7 +457,8 @@ public class GestorPersistencia {
                 String telf = rs.getString(TaulaClient.TELF);
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
+                Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
             }
 
         } catch (SQLException ex) {

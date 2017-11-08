@@ -5,7 +5,6 @@
  */
 package easycheckserver.test;
 
-import easycheckserver.test.TestClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import easycheckserver.model.Reserva;
@@ -97,10 +96,10 @@ public class TestDescargaTodo {
                 System.out.println("\t" + serv.getHora_inici() + " - " + serv.getHora_final());
                 for (Reserva res : serv.getLlistaReserves()) {
                     System.out.println("\t\t - Reserva id: " + res.getId());
-                    System.out.println("\t\t " + res.getNom_titular() + " " + res.getCognom1_titular() + " " + res.getCognom2_titular());
-                    System.out.println("\t\t Dni: " + res.getDni_titular());
-                    System.out.println("\t\t email: " + res.getEmail_titular());
-                    System.out.println("\t\t Telf: " + res.getTelefon_titular());
+                    System.out.println("\t\t " + res.getClient().getNom_titular() + " " + res.getClient().getCognom1_titular() + " " + res.getClient().getCognom2_titular());
+                    System.out.println("\t\t Dni: " + res.getClient().getDni_titular());
+                    System.out.println("\t\t email: " + res.getClient().getEmail_titular());
+                    System.out.println("\t\t Telf: " + res.getClient().getTelefon_titular());
                     System.out.println("\t\t Loc: " + res.getLocalitzador());
                     System.out.println("\t\t QRCode: " + res.getQr_code());
                     System.out.println("\t\t Check-In: " + (res.getCheckin() == 1 ? "Realitzat" : "No realitzat"));

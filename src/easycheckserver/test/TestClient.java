@@ -144,11 +144,11 @@ public final class TestClient {
                 System.out.println("\t" + serv.getHora_inici());
                 ArrayList<Reserva> llistaReserves = (ArrayList<Reserva>) serv.getLlistaReserves();
                 for (Reserva res : llistaReserves) {
-                    System.out.println("\t\t" + res.getNom_titular());
-                    System.out.println("\t\t" + res.getCognom1_titular());
-                    System.out.println("\t\t" + res.getCognom2_titular());
-                    System.out.println("\t\t" + res.getDni_titular());
-                    System.out.println("\t\t" + res.getEmail_titular());
+                    System.out.println("\t\t" + res.getClient().getNom_titular());
+                    System.out.println("\t\t" + res.getClient().getCognom1_titular());
+                    System.out.println("\t\t" + res.getClient().getCognom2_titular());
+                    System.out.println("\t\t" + res.getClient().getDni_titular());
+                    System.out.println("\t\t" + res.getClient().getEmail_titular());
                 }
             }
         }
