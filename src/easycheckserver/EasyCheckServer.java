@@ -179,7 +179,10 @@ public class EasyCheckServer {
         if (requestMethod.equals("GET")) {
             System.out.println("HTTP GET REQUEST: " + uri);
             if (query.containsKey("id")) {
-                response = parser.getTreballadorId(query.get("id"));
+                String id = query.get("id");
+                if (!id.equals("1")) {
+                    response = parser.getTreballadorId(query.get("id"));
+                }
             } else {
                 response = parser.getTreballadors();
             }

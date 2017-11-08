@@ -23,7 +23,7 @@ public class DbContract {
         public final static String DNI = "dni";
         public final static String ADMIN = "esAdmin";
         public final static String LOGIN = "login";
-        public final static String PASSWORD = "password";  
+        public final static String PASSWORD = "password";
     }
     
         public static class TaulaServeis {
@@ -40,16 +40,23 @@ public class DbContract {
         public final static String NOM_TAULA = "reserva";
         public final static String ID = "_id"; 
         public final static String IDSERVEI = "id_servei";
+        public final static String IDCLIENT = "id_client";
         public final static String LOCALITZADOR = "localitzador";
-        public final static String DATARESERVA = "data_reserva";
+        public final static String DATARESERVA = "data_reserva";        
+        public final static String QRCODE = "qr_code";
+        public final static String CHECKIN = "checkin";
+        
+    }
+    
+    public static class TaulaClient {        
+        public final static String NOM_TAULA = "client";
+        public final static String ID = "_id";
+        public final static String DNI = "dni_titular";
         public final static String NOM = "nom_titular";
         public final static String COGNOM1 = "cognom1_titular";
         public final static String COGNOM2 = "cognom2_titular";
         public final static String TELF = "telefon_titular";
         public final static String EMAIL = "email_titular";
-        public final static String QRCODE = "qr_code";
-        public final static String CHECKIN = "checkin";
-        public final static String DNI = "dni_titular";
     }
 
 }

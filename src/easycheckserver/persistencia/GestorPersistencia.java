@@ -8,6 +8,7 @@ package easycheckserver.persistencia;
 import easycheckserver.model.Reserva;
 import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
+import easycheckserver.persistencia.DbContract.TaulaClient;
 import easycheckserver.persistencia.DbContract.TaulaReserva;
 import easycheckserver.persistencia.DbContract.TaulaServeis;
 import easycheckserver.persistencia.DbContract.TaulaTreballador;
@@ -108,7 +109,10 @@ public class GestorPersistencia {
                 String login = rs.getString(TaulaTreballador.LOGIN);
                 String password = rs.getString(TaulaTreballador.PASSWORD);
                 int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
-                llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));
+                //Mai ha de tornar el SuperAdmin
+                if (id != 1) {
+                    llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));
+                }
             }
 
         } catch (SQLException ex) {
@@ -124,20 +128,35 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA + " WHERE " + TaulaReserva.IDSERVEI + "=" + idServei);
+            stm = conn.prepareStatement("SELECT "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
+                    + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + "=" + idServei);
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
-                String nom = rs.getString(TaulaReserva.NOM);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String nom = rs.getString(TaulaClient.NOM);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
+                String email = rs.getString(TaulaClient.EMAIL);
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                String dni = rs.getString(TaulaReserva.DNI);
+                String dni = rs.getString(TaulaClient.DNI);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
 
@@ -155,21 +174,35 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA);
+            stm = conn.prepareStatement("SELECT "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID);
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
-                String nom = rs.getString(TaulaReserva.NOM);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String nom = rs.getString(TaulaClient.NOM);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
+                String email = rs.getString(TaulaClient.EMAIL);
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                String dni = rs.getString(TaulaReserva.DNI);
+                String dni = rs.getString(TaulaClient.DNI);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
 
@@ -198,20 +231,35 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA + " WHERE " + TaulaReserva.QRCODE + " LIKE '" + qrcode + "'");
+            stm = conn.prepareStatement("SELECT "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
+                    + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + " LIKE '" + qrcode + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
-                String nom = rs.getString(TaulaReserva.NOM);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String nom = rs.getString(TaulaClient.NOM);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
+                String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                String dni = rs.getString(TaulaReserva.DNI);
+                String dni = rs.getString(TaulaClient.DNI);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
 
@@ -229,20 +277,35 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA + " WHERE " + TaulaReserva.LOCALITZADOR + " LIKE '" + loc + "'");
+            stm = conn.prepareStatement("SELECT "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
+                    + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + " LIKE '" + loc + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
-                String nom = rs.getString(TaulaReserva.NOM);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String nom = rs.getString(TaulaClient.NOM);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
+                String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                String dni = rs.getString(TaulaReserva.DNI);
+                String dni = rs.getString(TaulaClient.DNI);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
 
@@ -260,19 +323,34 @@ public class GestorPersistencia {
         PreparedStatement stm = null;
         ResultSet rs;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaReserva.NOM_TAULA + " WHERE " + TaulaReserva.DNI + " LIKE '" + dni + "'");
+            stm = conn.prepareStatement("SELECT "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
+                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
+                    + " WHERE " + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI + " LIKE '" + dni + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
-                String nom = rs.getString(TaulaReserva.NOM);
+                String nom = rs.getString(TaulaClient.NOM);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
+                String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
@@ -297,14 +375,16 @@ public class GestorPersistencia {
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.NOM + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.COGNOM1 + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.COGNOM2 + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.TELF + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DNI
-                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaServeis.NOM_TAULA
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA 
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
+                    + " LEFT JOIN " + TaulaServeis.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.ID
                     + " WHERE " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.DATASERVEI + " LIKE " + "'" + data + "'");
             rs = stm.executeQuery();
@@ -313,14 +393,14 @@ public class GestorPersistencia {
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
-                String nom = rs.getString(TaulaReserva.NOM);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
+                String nom = rs.getString(TaulaClient.NOM);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
-                String dni = rs.getString(TaulaReserva.DNI);
+                String dni = rs.getString(TaulaClient.DNI);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
 
@@ -345,17 +425,19 @@ public class GestorPersistencia {
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DATARESERVA + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.NOM + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.COGNOM1 + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.COGNOM2 + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.TELF + ", "
-                    + TaulaReserva.NOM_TAULA + "." + TaulaReserva.EMAIL + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.NOM + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM1 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.COGNOM2 + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.TELF + ", "
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
-                    + TaulaServeis.NOM_TAULA + "." + TaulaServeis.DATASERVEI
-                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaServeis.NOM_TAULA
+                    + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA 
+                    + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
+                    + " LEFT JOIN " + TaulaServeis.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.ID
                     + " WHERE " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.DATASERVEI + " = '" + data + "'"
-                    + " AND " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.DNI + " = '" + dni + "'");
+                    + " AND " + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI + " = '" + dni + "'");
             rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
@@ -363,11 +445,11 @@ public class GestorPersistencia {
                 String qrcode = rs.getString(TaulaReserva.QRCODE);
                 String data_reserva = rs.getString(TaulaReserva.DATARESERVA);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
-                String nom = rs.getString(TaulaReserva.NOM);
-                String cognom1 = rs.getString(TaulaReserva.COGNOM1);
-                String cognom2 = rs.getString(TaulaReserva.COGNOM2);
-                String telf = rs.getString(TaulaReserva.TELF);
-                String email = rs.getString(TaulaReserva.EMAIL);
+                String nom = rs.getString(TaulaClient.NOM);
+                String cognom1 = rs.getString(TaulaClient.COGNOM1);
+                String cognom2 = rs.getString(TaulaClient.COGNOM2);
+                String telf = rs.getString(TaulaClient.TELF);
+                String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 llista.add(new Reserva(id, idServei, loc, data_reserva, nom, cognom1, cognom2, telf, email, qrcode, dni, checkin));
             }
@@ -721,7 +803,7 @@ public class GestorPersistencia {
         String response = "0";
         List<Treballador> llista = getTreballadors();
         for (Treballador treb : llista) {
-            if (treb.getLogin().equals(user)){
+            if (treb.getLogin().equals(user)) {
                 response = "1";
                 if (treb.getPassword().equals(password)) {
                     response = "2";

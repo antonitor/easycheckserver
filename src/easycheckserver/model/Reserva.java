@@ -34,7 +34,7 @@ public class Reserva implements Serializable {
         this.data_reserva = data;
         this.nom_titular = nom;
         this.cognom1_titular = cognom1;
-        this.cognom2_titular = cognom1;
+        this.cognom2_titular = cognom2;
         this.telefon_titular = telf;
         this.email_titular = email;
         this.qr_code = qrcode;
