@@ -36,7 +36,7 @@ public class TestPostMethod {
         //inserirServei("Mallorca - Menorca", "11/11/2017","10:00","11:00",1);
         //actualitzarServei(10,"Mallorca - Menorca", "11/11/2017","10:00","21:00",1);
         //borrarServei(10);
-        //borrarTreballador("1");
+        borrarTreballador("5");
         //assignarTreballador("7", "3");
         //inserirTreballador("Carles", "Puig", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
         //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444K", "Puchi", "xxx", 0);

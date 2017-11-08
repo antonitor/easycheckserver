@@ -182,7 +182,7 @@ public class EasyCheckServer {
             query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("borrarid")) {
-                response = "" + gestor.borrarTreballador(query.get("borrarid"));
+                response = buildPostResponseBorrar(gestor.borrarTreballador(query.get("borrarid")));
             } else if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login")) {
                 response = "" + gestor.updateTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"));
             } else if (query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
@@ -194,6 +194,17 @@ public class EasyCheckServer {
             }
         }
         return response;
+    }
+    
+    private static String buildPostResponseBorrar(int response) {
+        switch (response){
+            case 0:
+                return "No s'ha trobat el treballador";
+            case 1:
+                return "Treballador esborrat correctament";
+            default:
+                return "S'ha produït un error inesperat";
+        }
     }
 
     private static String handleLoginRequest(HttpExchange t) {

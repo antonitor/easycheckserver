@@ -110,10 +110,7 @@ public class GestorPersistencia {
                 String login = rs.getString(TaulaTreballador.LOGIN);
                 String password = rs.getString(TaulaTreballador.PASSWORD);
                 int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
-                //Mai ha de tornar el SuperAdmin
-                if (id != 1) {
-                    llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));
-                }
+                llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));                
             }
 
         } catch (SQLException ex) {
@@ -676,6 +673,9 @@ public class GestorPersistencia {
     }
 
     public int assignarTreballador(String idServei, String idTreballador) {
+        if (idTreballador.equals("1")) {
+            return 0;
+        }
         open();
         int rowsUpdated = 0;
         Statement stm = null;
