@@ -5,17 +5,15 @@
  */
 package easycheckserver.test;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,11 +33,11 @@ public class TestPostMethod {
     public TestPostMethod() {
         //inserirServei("Mallorca - Menorca", "11/11/2017","10:00","11:00",1);
         //actualitzarServei(10,"Mallorca - Menorca", "11/11/2017","10:00","21:00",1);
-        //borrarServei(10);
-        borrarTreballador("5");
-        //assignarTreballador("7", "3");
-        //inserirTreballador("Carles", "Puig", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
-        //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
+        //borrarServei(11);
+        //borrarTreballador("2");
+        //assignarTreballador("7", "2");
+        //inserirTreballador("Carles", "Puig", "Puigdemont", "4444444k", "toni", "xxx", 0);
+        //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444k", "Puchi", "xxx", 0);
     }
 
   
@@ -48,82 +46,46 @@ public class TestPostMethod {
         String query = buildQueryBorrarServei(idServei);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
         response = doPostRequest(url, query);
-        if (response.charAt(0)!=('0')) {
-            System.out.println("Borrat servei " + idServei);
-        }
         return response;
     }
 
     public String inserirServei(String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
-        String response = "";
         String query = buildQueryInserirServei(descripcio, dataservei, horaInici, horaFinal, idTreballador);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
-        response = doPostRequest(url, query);
-        if (!response.equals("0")) {
-            System.out.println("Inserit servei " + descripcio);
-        }
-        return response;
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);        
+        return doPostRequest(url, query);
     }
 
     public String actualitzarServei(int id, String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
-        String response = "";
         String query = buildQueryActualitzarServei(id, descripcio, dataservei, horaInici, horaFinal, idTreballador);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
-        response = doPostRequest(url, query);
-        if (!response.equals("0")) {
-            System.out.println("Actualitzat servei " + descripcio + " amb id " + id);
-        }
-        return response;
+        return doPostRequest(url, query);
     }
 
     public String borrarTreballador(String idTreballador) {
-        String response = "";
         String query = buildQueryBorrarTreballador(idTreballador);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        response = doPostRequest(url, query);
-        if (response.charAt(0)!=('0')) {
-            System.out.println("Esborrat treballador " + idTreballador);
-        } else {
-            System.out.println("No s'ha pogut esborrar el treballador");
-        }
-        return response;
+        return doPostRequest(url, query);
     }
 
     public String assignarTreballador(String idServei, String idTreballador) {
-        String response = "";
         String query = buildQueryAssignarTreballador(idServei, idTreballador);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        response = doPostRequest(url, query);
-        if (!response.equals("0")) {
-            System.out.println("Servei " + idServei + " assignat al treballador " + idTreballador);
-        }
-        return response;
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);         
+        return doPostRequest(url, query);
     }
 
-    public String inserirTreballador(String nom, String cognom1, String cognom2, String dni, String login, String password, int esadmin) {
-        String response = "";
+    public String inserirTreballador(String nom, String cognom1, String cognom2, String dni, String login, String password, int esadmin) {        
         String query = buildQueryInserirTreballador(nom, cognom1, cognom2, dni, login, password, esadmin);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        response = doPostRequest(url, query);
-        if (!response.equals("0")) {
-            System.out.println("Inserit treballador " + nom);
-        }
-        return response;
+        return doPostRequest(url, query);
     }
 
     public String actualitzarTreballador(int id, String nom, String cognom1, String cognom2, String dni, String login, String password, int esadmin) {
-        String response = "";
         String query = buildQueryActualitzarTreballador(id, nom, cognom1, cognom2, dni, login, password, esadmin);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
-        response = doPostRequest(url, query);
-        if (!response.equals("0")) {
-            System.out.println("Actualitzat treballador " + nom + " amb id " + id);
-        }
-        return response;
+        return doPostRequest(url, query);
     }
 
     public static String doPostRequest(URL url, String parameters) {
-        byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
@@ -131,29 +93,25 @@ public class TestPostMethod {
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", "" + Integer.toString(parameters.getBytes().length));
             connection.setRequestProperty("Content-Language", "en-US");
-
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
-
-            //Send request
-            DataOutputStream wr = new DataOutputStream(
-                    connection.getOutputStream());
+            //Envia request
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(parameters);
             wr.flush();
             wr.close();
 
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer response = new StringBuffer();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
+            //Rep resposta
+            String responseBody = "";
+            if (connection.getResponseCode() == 200) {
+                InputStream response = connection.getInputStream();
+                Scanner scanner = new Scanner(response);
+                responseBody = scanner.useDelimiter("\\A").next();
             }
-            rd.close();
-            System.out.println(response);
-            return response.toString();
+            
+            System.out.println(responseBody);
+            return responseBody;
 
         } catch (IOException ex) {
             ex.printStackTrace();

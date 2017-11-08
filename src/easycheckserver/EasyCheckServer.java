@@ -8,7 +8,6 @@ package easycheckserver;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
-import easycheckserver.persistencia.GestorPersistencia;
 import static easycheckserver.utils.NetUtils.queryToMap;
 import easycheckserver.utils.JSonParser;
 import java.io.BufferedReader;
@@ -30,14 +29,12 @@ import java.util.logging.Logger;
 public class EasyCheckServer {
 
     private static JSonParser parser;
-    private static GestorPersistencia gestor;
 
     private EasyCheckServer() {
     }
 
     public static void main(String[] args) throws Exception {
         parser = new JSonParser();
-        gestor = new GestorPersistencia();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/easycheckapi/reserva", new ReservesHandler());
@@ -53,6 +50,7 @@ public class EasyCheckServer {
         @Override
         public void handle(HttpExchange t) throws IOException {
             String response = handleReservesRequest(t);
+            t.getResponseHeaders().add("Content-Type", "application/json");
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -65,6 +63,7 @@ public class EasyCheckServer {
         @Override
         public void handle(HttpExchange t) throws IOException {
             String response = handleServeisRequest(t);
+            t.getResponseHeaders().add("Content-Type", "application/json");
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -77,6 +76,7 @@ public class EasyCheckServer {
         @Override
         public void handle(HttpExchange t) throws IOException {
             String response = handleTreballadorRequest(t);
+            t.getResponseHeaders().add("Content-Type", "application/json");
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -152,11 +152,16 @@ public class EasyCheckServer {
             System.out.println("HTTP POST REQUEST: " + uri);
             System.out.println("POST Query: " + query);
             if (query.containsKey("id") && query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
-                response = "" + gestor.updateServei(query.get("id"), query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
+                response = parser.actualitzarServei(query.get("id"), query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
             } else if (query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
-                response = "" + gestor.insertServei(query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
+                response = parser.inserirServei(query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
             } else if (query.containsKey("borrarid")) {
-                response = "" + gestor.borrarServei(query.get("borrarid"));
+                response = parser.esborrarServei(query.get("borrarid"));
+            } else {
+                response = "{\n"
+                        + "  \"requestCode\": 0,\n"
+                        + "  \"message\": \"Query invalid.\"\n"
+                        + "}";
             }
         }
         return response;
@@ -182,29 +187,21 @@ public class EasyCheckServer {
             query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("borrarid")) {
-                response = buildPostResponseBorrar(gestor.borrarTreballador(query.get("borrarid")));
+                response = parser.esborrarTreballador(query.get("borrarid"));
             } else if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login")) {
-                response = "" + gestor.updateTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"));
+                response = parser.actualitzarTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"));
             } else if (query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
-                response = "" + gestor.insertTreballador(query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"), query.get("password"));
+                response = parser.inserirTreballador(query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"), query.get("password"));
             } else if (query.containsKey("idservei") && query.containsKey("idtreballador")) {
-                response = "" + gestor.assignarTreballador(query.get("idservei"), query.get("idtreballador"));
+                response = parser.assignarTreballador(query.get("idservei"), query.get("idtreballador"));
             } else {
-                response = "0";
+                response = "{\n"
+                        + "  \"requestCode\": 0,\n"
+                        + "  \"message\": \"Query invalid.\"\n"
+                        + "}";
             }
         }
         return response;
-    }
-    
-    private static String buildPostResponseBorrar(int response) {
-        switch (response){
-            case 0:
-                return "No s'ha trobat el treballador";
-            case 1:
-                return "Treballador esborrat correctament";
-            default:
-                return "S'ha produït un error inesperat";
-        }
     }
 
     private static String handleLoginRequest(HttpExchange t) {
@@ -215,8 +212,7 @@ public class EasyCheckServer {
             Map<String, String> query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("user") && query.containsKey("pass")) {
-                response = "" + gestor.login(query.get("user"), query.get("pass"));
-                System.out.println("login " + response);
+                response = parser.Login(query.get("user"), query.get("pass"));
             }
         }
         return response;

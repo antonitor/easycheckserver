@@ -6,6 +6,7 @@
 package easycheckserver.persistencia;
 
 import easycheckserver.model.Client;
+import easycheckserver.utils.PostResponse;
 import easycheckserver.model.Reserva;
 import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
@@ -35,7 +36,6 @@ public class GestorPersistencia {
     private final String URL = "jdbc:postgresql://localhost:5432/easycheck";
     private final String USER = "marcarniuser";
     private final String PASS = "marcarnipass";
-    private Object TaulaServei;
 
     public GestorPersistencia() {
         try {
@@ -110,7 +110,7 @@ public class GestorPersistencia {
                 String login = rs.getString(TaulaTreballador.LOGIN);
                 String password = rs.getString(TaulaTreballador.PASSWORD);
                 int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
-                llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));                
+                llista.add(new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id)));
             }
 
         } catch (SQLException ex) {
@@ -156,7 +156,7 @@ public class GestorPersistencia {
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -203,7 +203,8 @@ public class GestorPersistencia {
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));            }
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
+            }
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
@@ -260,7 +261,7 @@ public class GestorPersistencia {
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -307,7 +308,7 @@ public class GestorPersistencia {
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));            
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -354,7 +355,7 @@ public class GestorPersistencia {
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -384,7 +385,7 @@ public class GestorPersistencia {
                     + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
                     + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
-                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA 
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
                     + " LEFT JOIN " + TaulaServeis.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.ID
@@ -404,7 +405,7 @@ public class GestorPersistencia {
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 String dni = rs.getString(TaulaClient.DNI);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -435,7 +436,7 @@ public class GestorPersistencia {
                     + TaulaClient.NOM_TAULA + "." + TaulaClient.EMAIL + ", "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.CHECKIN + ", "
                     + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
-                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA 
+                    + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
                     + " LEFT JOIN " + TaulaServeis.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.ID
@@ -455,7 +456,7 @@ public class GestorPersistencia {
                 String email = rs.getString(TaulaClient.EMAIL);
                 int checkin = rs.getInt(TaulaReserva.CHECKIN);
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
-                llista.add(new Reserva(id, idServei, client, loc, data_reserva,  qrcode, checkin));
+                llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
 
         } catch (SQLException ex) {
@@ -605,10 +606,9 @@ public class GestorPersistencia {
         return llista;
     }
 
-    public int insertTreballador(String nom, String cognom1, String cognom2, String dni, String admin, String login, String password) {
+    public PostResponse insertTreballador(String nom, String cognom1, String cognom2, String dni, String admin, String login, String password) {
+        PostResponse response = new PostResponse();
         open();
-        System.out.println("INSERINT TREBaLLADOR " + nom);
-        int rowsUpdated = 0;
         Statement stm = null;
         String insertQuery = "INSERT INTO " + TaulaTreballador.NOM_TAULA + "("
                 + TaulaTreballador.NOM + ", "
@@ -619,13 +619,27 @@ public class GestorPersistencia {
                 + TaulaTreballador.LOGIN + ", "
                 + TaulaTreballador.PASSWORD
                 + ") VALUES ('" + nom + "', '" + cognom1 + "', '" + cognom2 + "', '" + dni + "', " + admin + ", '" + login + "', '" + password + "')";
-
         try {
             stm = conn.createStatement();
-            System.out.println(insertQuery);
-            rowsUpdated = stm.executeUpdate(insertQuery);
+            int rowsUpdated = stm.executeUpdate(insertQuery);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Treballador " + nom + " inserit correctament.");
+            } else if (rowsUpdated == 0) {
+                response.setRequestCode(0);
+                response.setMessage("No s'ha pogut inserir el treballador " + nom);
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            response.setRequestCode(0);
+            if (ex.getSQLState().equals("23505")) {
+                if (ex.getMessage().contains("login")) {
+                    response.setMessage("Error al inserir treballador: aquest login ja existeix");
+                } else if (ex.getMessage().contains("dni")) {
+                    response.setMessage("Error al inserir treballador: ja existeix un treballador amb aquest dni");
+                } else {
+                    response.setMessage(ex.getMessage());
+                }
+            }            
         } finally {
             if (stm != null) {
                 try {
@@ -634,17 +648,16 @@ public class GestorPersistencia {
                 }
             }
             close();
-            System.out.println("Treballadors inserits: " + rowsUpdated);
-            return rowsUpdated;
+            return response;
         }
     }
 
-    public int updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
+    public PostResponse updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
         if (id.equals("1")) {
-            return 0;
+            return new PostResponse(0, "No es pot modificar el usuari Administrador");
         }
+        PostResponse response = new PostResponse();
         open();
-        int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaTreballador.NOM_TAULA + " SET "
                 + TaulaTreballador.NOM + "='" + nom + "', "
@@ -656,9 +669,25 @@ public class GestorPersistencia {
                 + " WHERE " + TaulaTreballador.ID + "=" + id;
         try {
             stm = conn.createStatement();
-            rowsUpdated = stm.executeUpdate(updateSQL);
+            int rowsUpdated = stm.executeUpdate(updateSQL);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Treballador actualitzat correctament.");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("No sha pogut actualitzar el treballador.");
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            response.setRequestCode(0);
+            if (ex.getSQLState().equals("23505")) {
+                if (ex.getMessage().contains("login")) {
+                    response.setMessage("Error al inserir treballador: aquest login ja existeix");
+                } else if (ex.getMessage().contains("dni")) {
+                    response.setMessage("Error al inserir treballador: ja existeix un treballador amb aquest dni");
+                } else {
+                    response.setMessage(ex.getMessage());
+                }
+            }  
         } finally {
             if (stm != null) {
                 try {
@@ -668,25 +697,32 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Treballadors actualitzats: " + rowsUpdated);
-        return rowsUpdated;
+        return response;
     }
 
-    public int assignarTreballador(String idServei, String idTreballador) {
+    public PostResponse assignarTreballador(String idServei, String idTreballador) {
         if (idTreballador.equals("1")) {
-            return 0;
+            return new PostResponse(0, "No es poden assignar Serveis al usuari Administrador");
         }
+        PostResponse response = new PostResponse();
         open();
-        int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
                 + TaulaServeis.ID_TREBALLADOR + "=" + idTreballador
                 + " WHERE " + TaulaServeis.ID + "=" + idServei;
         try {
             stm = conn.createStatement();
-            rowsUpdated = stm.executeUpdate(updateSQL);
+            int rowsUpdated = stm.executeUpdate(updateSQL);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Treballador " + idTreballador + " assignat al servei " + idServei + " correctament.");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("No sha pogut assignar el treballador al servei.");
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            response.setRequestCode(0);
+            response.setMessage(ex.getMessage());
         } finally {
             if (stm != null) {
                 try {
@@ -696,24 +732,37 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Assignant treballador " + idTreballador + " a servei " + idServei + " -> " + (rowsUpdated >= 1 ? " Correcte! " : " Error!"));
-        return rowsUpdated;
+        return response;
     }
 
-    public int borrarTreballador(String idTreballador) {
+    public PostResponse borrarTreballador(String idTreballador) {
+        PostResponse response = new PostResponse();
         if (idTreballador.equals("1")) {
-            return 0;
+            response.setRequestCode(0);
+            response.setMessage("No es pot esborrar el Administrador.");
+            return response;
         }
         open();
-        int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "DELETE FROM " + TaulaTreballador.NOM_TAULA
                 + " WHERE " + TaulaTreballador.ID + "=" + idTreballador;
         try {
             stm = conn.createStatement();
-            rowsUpdated = stm.executeUpdate(updateSQL);
+            int rowsUpdated = stm.executeUpdate(updateSQL);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Treballador esborrat correctament");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("Aquest treballador no existeix.");
+            }
         } catch (SQLException ex) {
-            return ex.getErrorCode();
+            response.setRequestCode(0);
+            if (ex.getSQLState().equals("23503")) {
+                response.setMessage("No es pot esborrar aquest treballador, té serveis assignats.");
+            } else {
+                response.setMessage(ex.getMessage());
+            }
         } finally {
             if (stm != null) {
                 try {
@@ -723,14 +772,12 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Borrant treballador: " + idTreballador + " -> " + (rowsUpdated >= 1 ? " Correcte! " : " Error!"));
-        return rowsUpdated;
+        return response;
     }
 
-    public int insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+    public PostResponse insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        PostResponse response = new PostResponse();
         open();
-        System.out.println("INSERINT SERVEI " + descripcio);
-        int rowsUpdated = 0;
         Statement stm = null;
         String insertQuery = "INSERT INTO " + TaulaServeis.NOM_TAULA + "("
                 + TaulaServeis.DESCRIPCIO + ", "
@@ -742,10 +789,17 @@ public class GestorPersistencia {
 
         try {
             stm = conn.createStatement();
-            System.out.println(insertQuery);
-            rowsUpdated = stm.executeUpdate(insertQuery);
+            int rowsUpdated = stm.executeUpdate(insertQuery);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Servei " + descripcio + " inserit correctament.");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("Error al crear nou Servei.");
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            response.setRequestCode(0);
+            response.setMessage(ex.getMessage());            
         } finally {
             if (stm != null) {
                 try {
@@ -754,14 +808,13 @@ public class GestorPersistencia {
                 }
             }
             close();
-            System.out.println("Serveis inserits: " + rowsUpdated);
-            return rowsUpdated;
+            return response;
         }
     }
 
-    public int updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+    public PostResponse updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        PostResponse response = new PostResponse();
         open();
-        int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
                 + TaulaServeis.DESCRIPCIO + "='" + descripcio + "', "
@@ -772,9 +825,17 @@ public class GestorPersistencia {
                 + " WHERE " + TaulaServeis.ID + "=" + id;
         try {
             stm = conn.createStatement();
-            rowsUpdated = stm.executeUpdate(updateSQL);
+            int rowsUpdated = stm.executeUpdate(updateSQL);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Servei " + descripcio + " actualitzat correctament.");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("Error al actualitzar el Servei.");
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+                response.setRequestCode(0);
+                response.setMessage("Error al crear nou Servei.");            
         } finally {
             if (stm != null) {
                 try {
@@ -784,21 +845,32 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Serveis actualitzats: " + rowsUpdated);
-        return rowsUpdated;
+        return response;
     }
 
-    public int borrarServei(String idServei) {
+    public PostResponse esborrarServei(String idServei) {
+        PostResponse response = new PostResponse();
         open();
-        int rowsUpdated = 0;
         Statement stm = null;
         String updateSQL = "DELETE FROM " + TaulaServeis.NOM_TAULA
                 + " WHERE " + TaulaServeis.ID + "=" + idServei;
         try {
             stm = conn.createStatement();
-            rowsUpdated = stm.executeUpdate(updateSQL);
+            int rowsUpdated = stm.executeUpdate(updateSQL);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Servei " + idServei + " esborrat correctament.");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("Error al borrar el Servei.");
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            response.setRequestCode(0);
+            if (ex.getSQLState().equals("23503")) {
+                response.setMessage("Error al esborrar Servei: te reserves asociades.");
+            } else {
+                response.setMessage(ex.getMessage());
+            }
         } finally {
             if (stm != null) {
                 try {
@@ -808,18 +880,18 @@ public class GestorPersistencia {
             }
             close();
         }
-        System.out.println("Borrant servei: " + idServei + " -> " + (rowsUpdated >= 1 ? " Correcte! " : " Error!"));
-        return rowsUpdated;
+        return response;
     }
 
-    public int login(String user, String password) {
-        int response = 0;
+    public PostResponse login(String user, String password) {
+        PostResponse response = new PostResponse(0, "Usuari incorrecte.");
         List<Treballador> llista = getTreballadors();
         for (Treballador treb : llista) {
-            if (treb.getLogin().equals(user)) {
-                response = 1;
+            if (treb.getLogin().equals(user)) {                
+                response.setMessage("Contrasenya incorrecta.");
                 if (treb.getPassword().equals(password)) {
-                    response = 2;
+                    response.setRequestCode(1);
+                    response.setMessage("Login correcte.");
                     break;
                 }
             }

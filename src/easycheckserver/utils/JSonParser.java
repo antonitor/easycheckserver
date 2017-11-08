@@ -131,6 +131,62 @@ public class JSonParser {
         gestor.close();
         return gson.toJson(llista);
     }
+    
+    public String esborrarTreballador(String id){
+        gestor.open();
+        PostResponse response = gestor.borrarTreballador(id);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String inserirTreballador(String nom, String cognom1, String cognom2, String dni, String admin, String login, String password) {
+        gestor.open();
+        PostResponse response = gestor.insertTreballador(nom, cognom1, cognom2, dni, admin, login, password);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String actualitzarTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
+        gestor.open();
+        PostResponse response = gestor.updateTreballador(id, nom, cognom1, cognom2, dni, admin, login);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String assignarTreballador(String idServei, String idTreballador) {
+        gestor.open();
+        PostResponse response = gestor.assignarTreballador(idServei, idTreballador);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String inserirServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador){
+        gestor.open();
+        PostResponse response = gestor.insertServei(descripcio, dataServei, horaInici, horaFinal, idTreballador);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String actualitzarServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador){
+        gestor.open();
+        PostResponse response = gestor.updateServei(id, descripcio, dataServei, horaInici, horaFinal, idTreballador);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String esborrarServei(String id){
+        gestor.open();
+        PostResponse response = gestor.esborrarServei(id);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
+    public String Login(String user, String password){
+        gestor.open();
+        PostResponse response = gestor.login(user, password);
+        gestor.close();
+        return gson.toJson(response);
+    }
 
     private int stringToInt(String integer) {
         try {

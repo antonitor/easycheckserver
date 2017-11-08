@@ -46,11 +46,13 @@ public class TestDescargaTodo {
         String responseBody = "";
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            String userCredentials = "Antoni:xxx";
-            String basicAuth = Base64.getEncoder().encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8));            
-            connection.setRequestProperty ("Authorization", "Basic "+ userCredentials);
+            //String userCredentials = "Antoni:xxx";
+            //String basicAuth = Base64.getEncoder().encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8));            
+            //connection.setRequestProperty ("Authorization", "Basic "+ userCredentials);
             connection.setRequestMethod("GET");
             int responseCode = connection.getResponseCode();
+            System.out.println(connection.getContentType());
+            System.out.print(connection.getResponseMessage() + " ");
             System.out.println(responseCode);
             if (responseCode == 200) {
                 InputStream response = connection.getInputStream();
@@ -105,6 +107,7 @@ public class TestDescargaTodo {
                     System.out.println("\t\t Check-In: " + (res.getCheckin() == 1 ? "Realitzat" : "No realitzat"));
                 }
             }
+            System.out.println();
         }
 
         return llistaDeTreballadors;

@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,32 +29,21 @@ public class TestLogin {
     
     private static final String BASE_URL = "localhost";
     private static final int PORT = 8080;
+    private static final String USER = "toni";
+    private static final String PASSWORD = "xxx";
 
     public static void main(String[] args) {
-        new TestLogin();
+        new TestLogin().login(USER, PASSWORD);
     }
+ 
     
-    public TestLogin(){
-        String user = "Antoni";
-        String password = "xxx";
-        String response = "";
+    public String login(String user, String password){
         String query = buildQueryLogin(user,password);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/login", null);
-        response = doPostRequest(url, query);
-        if (response.equals("0")) {
-            response = "Usuari desconegut.";
-        } else if (response.equals("1")){
-            response = "Contrasenya incorrecta.";
-        } else if (response.equals("2")) {
-            response = "Login succesful! Hola " + user + "!";
-        } else {
-            response = "WAT THE FAK!!??";
-        }
-        System.out.println(response);
+        return doPostRequest(url, query);
     }
     
     public static String doPostRequest(URL url, String parameters) {
-        byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
@@ -67,23 +57,20 @@ public class TestLogin {
             connection.setDoOutput(true);
 
             //Send request
-            DataOutputStream wr = new DataOutputStream(
-                    connection.getOutputStream());
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(parameters);
             wr.flush();
             wr.close();
 
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer response = new StringBuffer();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
+            String responseBody = "";
+            if (connection.getResponseCode() == 200) {
+                InputStream response = connection.getInputStream();
+                Scanner scanner = new Scanner(response);
+                responseBody = scanner.useDelimiter("\\A").next();
             }
-            rd.close();
-            System.out.println(response);
-            return response.toString();
+            
+            System.out.println(responseBody);
+            return responseBody;
 
         } catch (IOException ex) {
             ex.printStackTrace();
