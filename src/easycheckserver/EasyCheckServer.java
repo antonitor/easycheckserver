@@ -5,14 +5,9 @@
  */
 package easycheckserver;
 
-import com.sun.net.httpserver.Authenticator;
-import com.sun.net.httpserver.BasicAuthenticator;
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
-import static easycheckserver.EasyCheckServer.gestor;
-import easycheckserver.model.Treballador;
 import easycheckserver.persistencia.GestorPersistencia;
 import static easycheckserver.utils.NetUtils.queryToMap;
 import easycheckserver.utils.JSonParser;
@@ -24,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,9 +29,8 @@ import java.util.logging.Logger;
  */
 public class EasyCheckServer {
 
-    public static JSonParser parser;
-    public static GestorPersistencia gestor;
-    public static LoginAuthenticator authenticator;
+    private static JSonParser parser;
+    private static GestorPersistencia gestor;
 
     private EasyCheckServer() {
     }
@@ -45,7 +38,6 @@ public class EasyCheckServer {
     public static void main(String[] args) throws Exception {
         parser = new JSonParser();
         gestor = new GestorPersistencia();
-        authenticator = new LoginAuthenticator("/easycheckapi");
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/easycheckapi/reserva", new ReservesHandler());
@@ -84,7 +76,6 @@ public class EasyCheckServer {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            System.out.println(t.getRequestHeaders());
             String response = handleTreballadorRequest(t);
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
@@ -213,7 +204,7 @@ public class EasyCheckServer {
             Map<String, String> query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("user") && query.containsKey("pass")) {
-                response = gestor.login(query.get("user"), query.get("pass"));
+                response = "" + gestor.login(query.get("user"), query.get("pass"));
                 System.out.println("login " + response);
             }
         }
@@ -235,25 +226,4 @@ public class EasyCheckServer {
         return query;
     }
 
-}
-
-class LoginAuthenticator extends BasicAuthenticator {
-
-    public LoginAuthenticator(String string) {
-        super(string);
-    }
-
-    @Override
-    public boolean checkCredentials(String user, String pass) {
-        boolean login = false;
-        List<Treballador> llistaUsuaris = gestor.getTreballadors();
-        for (Treballador treb : llistaUsuaris) {
-            if (treb.getNom().equals(user)) {
-                if (treb.getPassword().equals(pass)) {
-                    login = true;
-                }
-            }
-        }
-        return login;
-    }
 }

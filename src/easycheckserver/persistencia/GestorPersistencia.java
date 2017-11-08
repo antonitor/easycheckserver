@@ -643,6 +643,9 @@ public class GestorPersistencia {
     }
 
     public int updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
+        if (id.equals("1")) {
+            return 0;
+        }
         open();
         int rowsUpdated = 0;
         Statement stm = null;
@@ -698,6 +701,9 @@ public class GestorPersistencia {
     }
 
     public int borrarTreballador(String idTreballador) {
+        if (idTreballador.equals("1")) {
+            return 0;
+        }
         open();
         int rowsUpdated = 0;
         Statement stm = null;
@@ -707,7 +713,7 @@ public class GestorPersistencia {
             stm = conn.createStatement();
             rowsUpdated = stm.executeUpdate(updateSQL);
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            return ex.getErrorCode();
         } finally {
             if (stm != null) {
                 try {
@@ -806,14 +812,14 @@ public class GestorPersistencia {
         return rowsUpdated;
     }
 
-    public String login(String user, String password) {
-        String response = "0";
+    public int login(String user, String password) {
+        int response = 0;
         List<Treballador> llista = getTreballadors();
         for (Treballador treb : llista) {
             if (treb.getLogin().equals(user)) {
-                response = "1";
+                response = 1;
                 if (treb.getPassword().equals(password)) {
-                    response = "2";
+                    response = 2;
                     break;
                 }
             }

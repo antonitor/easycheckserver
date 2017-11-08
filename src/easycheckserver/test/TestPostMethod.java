@@ -34,9 +34,9 @@ public class TestPostMethod {
 
     public TestPostMethod() {
         //inserirServei("Mallorca - Menorca", "11/11/2017","10:00","11:00",1);
-        //actualitzarServei(11,"Mallorca - Menorca", "11/11/2017","10:00","21:00",1);
-        //borrarServei(13);
-        //borrarTreballador("4");
+        //actualitzarServei(10,"Mallorca - Menorca", "11/11/2017","10:00","21:00",1);
+        //borrarServei(10);
+        //borrarTreballador("1");
         //assignarTreballador("7", "3");
         //inserirTreballador("Carles", "Puig", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
         //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444K", "Puchi", "xxx", 0);
@@ -48,7 +48,7 @@ public class TestPostMethod {
         String query = buildQueryBorrarServei(idServei);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
         response = doPostRequest(url, query);
-        if (!response.equals("0")) {
+        if (response.charAt(0)!=('0')) {
             System.out.println("Borrat servei " + idServei);
         }
         return response;
@@ -81,8 +81,10 @@ public class TestPostMethod {
         String query = buildQueryBorrarTreballador(idTreballador);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
         response = doPostRequest(url, query);
-        if (!response.equals("0")) {
-            System.out.println("Borrat treballador " + idTreballador);
+        if (response.charAt(0)!=('0')) {
+            System.out.println("Esborrat treballador " + idTreballador);
+        } else {
+            System.out.println("No s'ha pogut esborrar el treballador");
         }
         return response;
     }
