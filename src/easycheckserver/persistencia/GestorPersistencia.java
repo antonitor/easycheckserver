@@ -71,10 +71,10 @@ public class GestorPersistencia {
     public Treballador getTreballadorId(int id) {
         Treballador treballador = null;
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaTreballador.NOM_TAULA + " WHERE _id=" + id);
-            rs = stm.executeQuery();
+            stm = conn.prepareStatement("SELECT * FROM " + TaulaTreballador.NOM_TAULA + " WHERE _id = ?");
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 String nom = rs.getString(TaulaTreballador.NOM);
                 String cognom1 = rs.getString(TaulaTreballador.COGNOM1);
@@ -85,7 +85,6 @@ public class GestorPersistencia {
                 int esAdmin = rs.getInt(TaulaTreballador.ADMIN);
                 treballador = new Treballador(id, nom, cognom1, cognom2, dni, login, password, esAdmin, getServeisTreballador(id));
             }
-
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
         } finally {
@@ -97,10 +96,9 @@ public class GestorPersistencia {
     public List<Treballador> getTreballadors() {
         List<Treballador> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaTreballador.NOM_TAULA);
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaTreballador.ID);
                 String nom = rs.getString(TaulaTreballador.NOM);
@@ -124,7 +122,6 @@ public class GestorPersistencia {
     public List<Reserva> getReservesServei(int idServei) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -141,8 +138,9 @@ public class GestorPersistencia {
                     + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
                     + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
-                    + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + "=" + idServei);
-            rs = stm.executeQuery();
+                    + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = ?");
+            stm.setInt(1, idServei);
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 String loc = rs.getString(TaulaReserva.LOCALITZADOR);
@@ -158,10 +156,8 @@ public class GestorPersistencia {
                 Client client = new Client(nom, cognom1, cognom2, telf, email, dni);
                 llista.add(new Reserva(id, idServei, client, loc, data_reserva, qrcode, checkin));
             }
-
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -171,7 +167,6 @@ public class GestorPersistencia {
     public List<Reserva> getReserves() {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -188,7 +183,7 @@ public class GestorPersistencia {
                     + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI
                     + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID);
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
@@ -208,28 +203,15 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
         return llista;
-    }
-
-    public void closeStatement(PreparedStatement stm) {
-        try {
-            if (stm != null && !stm.isClosed()) {
-                stm.close();
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
+    }    
 
     public List<Reserva> getReservesQRCode(String qrcode) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -247,7 +229,7 @@ public class GestorPersistencia {
                     + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
                     + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.QRCODE + " LIKE '" + qrcode + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
@@ -266,7 +248,6 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -276,7 +257,6 @@ public class GestorPersistencia {
     public List<Reserva> getReservesLoc(String loc) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -294,7 +274,7 @@ public class GestorPersistencia {
                     + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
                     + " WHERE " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.LOCALITZADOR + " LIKE '" + loc + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
@@ -313,7 +293,6 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -323,7 +302,6 @@ public class GestorPersistencia {
     public List<Reserva> getReservesDni(String dni) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -341,7 +319,7 @@ public class GestorPersistencia {
                     + " FROM " + TaulaReserva.NOM_TAULA + " LEFT JOIN " + TaulaClient.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDCLIENT + " = " + TaulaClient.NOM_TAULA + "." + TaulaClient.ID
                     + " WHERE " + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI + " LIKE '" + dni + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
@@ -360,7 +338,6 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -370,7 +347,6 @@ public class GestorPersistencia {
     public List<Reserva> getReservesData(String data) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -390,7 +366,7 @@ public class GestorPersistencia {
                     + " LEFT JOIN " + TaulaServeis.NOM_TAULA
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.ID
                     + " WHERE " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.DATASERVEI + " LIKE " + "'" + data + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
@@ -410,7 +386,6 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println("ERROR CODE: " + ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -421,7 +396,6 @@ public class GestorPersistencia {
     public List<Reserva> getReservesDniData(String dni, String data) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs;
         try {
             stm = conn.prepareStatement("SELECT "
                     + TaulaReserva.NOM_TAULA + "." + TaulaReserva.ID + ", "
@@ -442,7 +416,7 @@ public class GestorPersistencia {
                     + " ON " + TaulaReserva.NOM_TAULA + "." + TaulaReserva.IDSERVEI + " = " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.ID
                     + " WHERE " + TaulaServeis.NOM_TAULA + "." + TaulaServeis.DATASERVEI + " = '" + data + "'"
                     + " AND " + TaulaClient.NOM_TAULA + "." + TaulaClient.DNI + " = '" + dni + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaReserva.ID);
                 int idServei = rs.getInt(TaulaReserva.IDSERVEI);
@@ -461,7 +435,6 @@ public class GestorPersistencia {
 
         } catch (SQLException ex) {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-            ex.printStackTrace();
         } finally {
             closeStatement(stm);
         }
@@ -471,10 +444,9 @@ public class GestorPersistencia {
     public List<Servei> getServeis() {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA);
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 int idTreballador = rs.getInt(TaulaServeis.ID_TREBALLADOR);
@@ -495,10 +467,10 @@ public class GestorPersistencia {
     public List<Servei> getServeisTreballador(int idTreballador) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
-            stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.ID_TREBALLADOR + "=" + idTreballador);
-            rs = stm.executeQuery();
+            stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.ID_TREBALLADOR + " = ?");
+            stm.setInt(1, idTreballador);
+            ResultSet rs = stm.executeQuery();            
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 String descripcio = rs.getString(TaulaServeis.DESCRIPCIO);
@@ -518,10 +490,9 @@ public class GestorPersistencia {
     public List<Servei> getServeisData(String data) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + " = '" + data + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 int idTreballador = rs.getInt(TaulaServeis.ID_TREBALLADOR);
@@ -542,10 +513,9 @@ public class GestorPersistencia {
     public List<Servei> getServeisDataHora(String data, String hora) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + "= '" + data + "' AND " + TaulaServeis.HORAINICI + " = '" + hora + "'");
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 int idTreballador = rs.getInt(TaulaServeis.ID_TREBALLADOR);
@@ -566,10 +536,9 @@ public class GestorPersistencia {
     public List<Servei> getServeisTreballadorData(int idTreballador, String data) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + "='" + data + "' AND " + TaulaServeis.ID_TREBALLADOR + " = " + idTreballador);
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 String descripcio = rs.getString(TaulaServeis.DESCRIPCIO);
@@ -588,10 +557,9 @@ public class GestorPersistencia {
     public List<Servei> getServeisTreballadorDataHora(int idTreballador, String data, String hora) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
-        ResultSet rs = null;
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.DATASERVEI + "='" + data + "' AND " + TaulaServeis.HORAINICI + " = '" + hora + "' AND " + TaulaServeis.ID_TREBALLADOR + " = " + idTreballador);
-            rs = stm.executeQuery();
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 String descripcio = rs.getString(TaulaServeis.DESCRIPCIO);
@@ -608,7 +576,6 @@ public class GestorPersistencia {
 
     public PostResponse insertTreballador(String nom, String cognom1, String cognom2, String dni, String admin, String login, String password) {
         PostResponse response = new PostResponse();
-        open();
         Statement stm = null;
         String insertQuery = "INSERT INTO " + TaulaTreballador.NOM_TAULA + "("
                 + TaulaTreballador.NOM + ", "
@@ -630,6 +597,7 @@ public class GestorPersistencia {
                 response.setMessage("No s'ha pogut inserir el treballador " + nom);
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
                 if (ex.getMessage().contains("login")) {
@@ -639,17 +607,11 @@ public class GestorPersistencia {
                 } else {
                     response.setMessage(ex.getMessage());
                 }
-            }            
-        } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
             }
-            close();
-            return response;
+        } finally {
+            closeStatement(stm);
         }
+        return response;
     }
 
     public PostResponse updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
@@ -657,7 +619,6 @@ public class GestorPersistencia {
             return new PostResponse(0, "No es pot modificar el usuari Administrador");
         }
         PostResponse response = new PostResponse();
-        open();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaTreballador.NOM_TAULA + " SET "
                 + TaulaTreballador.NOM + "='" + nom + "', "
@@ -678,24 +639,19 @@ public class GestorPersistencia {
                 response.setMessage("No sha pogut actualitzar el treballador.");
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
                 if (ex.getMessage().contains("login")) {
-                    response.setMessage("Error al inserir treballador: aquest login ja existeix");
+                    response.setMessage("Error al actualitzar treballador: aquest login ja existeix");
                 } else if (ex.getMessage().contains("dni")) {
-                    response.setMessage("Error al inserir treballador: ja existeix un treballador amb aquest dni");
+                    response.setMessage("Error al actualitzar treballador: ja existeix un treballador amb aquest dni");
                 } else {
                     response.setMessage(ex.getMessage());
                 }
-            }  
-        } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
             }
-            close();
+        } finally {
+            closeStatement(stm);
         }
         return response;
     }
@@ -705,7 +661,6 @@ public class GestorPersistencia {
             return new PostResponse(0, "No es poden assignar Serveis al usuari Administrador");
         }
         PostResponse response = new PostResponse();
-        open();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
                 + TaulaServeis.ID_TREBALLADOR + "=" + idTreballador
@@ -721,16 +676,11 @@ public class GestorPersistencia {
                 response.setMessage("No sha pogut assignar el treballador al servei.");
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             response.setMessage(ex.getMessage());
         } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
-            }
-            close();
+            closeStatement(stm);
         }
         return response;
     }
@@ -742,7 +692,6 @@ public class GestorPersistencia {
             response.setMessage("No es pot esborrar el Administrador.");
             return response;
         }
-        open();
         Statement stm = null;
         String updateSQL = "DELETE FROM " + TaulaTreballador.NOM_TAULA
                 + " WHERE " + TaulaTreballador.ID + "=" + idTreballador;
@@ -757,6 +706,7 @@ public class GestorPersistencia {
                 response.setMessage("Aquest treballador no existeix.");
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23503")) {
                 response.setMessage("No es pot esborrar aquest treballador, té serveis assignats.");
@@ -764,20 +714,13 @@ public class GestorPersistencia {
                 response.setMessage(ex.getMessage());
             }
         } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
-            }
-            close();
+            closeStatement(stm);
         }
         return response;
     }
 
     public PostResponse insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
         PostResponse response = new PostResponse();
-        open();
         Statement stm = null;
         String insertQuery = "INSERT INTO " + TaulaServeis.NOM_TAULA + "("
                 + TaulaServeis.DESCRIPCIO + ", "
@@ -798,23 +741,17 @@ public class GestorPersistencia {
                 response.setMessage("Error al crear nou Servei.");
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
-            response.setMessage(ex.getMessage());            
+            response.setMessage(ex.getMessage());
         } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
-            }
-            close();
-            return response;
+            closeStatement(stm);
         }
+        return response;
     }
 
     public PostResponse updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
         PostResponse response = new PostResponse();
-        open();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
                 + TaulaServeis.DESCRIPCIO + "='" + descripcio + "', "
@@ -834,16 +771,11 @@ public class GestorPersistencia {
                 response.setMessage("Error al actualitzar el Servei.");
             }
         } catch (SQLException ex) {
-                response.setRequestCode(0);
-                response.setMessage("Error al crear nou Servei.");            
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+            response.setRequestCode(0);
+            response.setMessage("Error al crear nou Servei.");
         } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
-            }
-            close();
+            closeStatement(stm);
         }
         return response;
     }
@@ -865,6 +797,7 @@ public class GestorPersistencia {
                 response.setMessage("Error al borrar el Servei.");
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23503")) {
                 response.setMessage("Error al esborrar Servei: te reserves asociades.");
@@ -872,22 +805,36 @@ public class GestorPersistencia {
                 response.setMessage(ex.getMessage());
             }
         } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                }
-            }
-            close();
+            closeStatement(stm);
         }
         return response;
+    }
+    
+    public void closeStatement(PreparedStatement stm) {
+        try {
+            if (stm != null && !stm.isClosed()) {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        }
+    }
+    
+    public void closeStatement(Statement stm) {
+        try {
+            if (stm != null && !stm.isClosed()) {
+                stm.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
+        }
     }
 
     public PostResponse login(String user, String password) {
         PostResponse response = new PostResponse(0, "Usuari incorrecte.");
         List<Treballador> llista = getTreballadors();
         for (Treballador treb : llista) {
-            if (treb.getLogin().equals(user)) {                
+            if (treb.getLogin().equals(user)) {
                 response.setMessage("Contrasenya incorrecta.");
                 if (treb.getPassword().equals(password)) {
                     response.setRequestCode(1);

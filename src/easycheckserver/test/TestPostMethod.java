@@ -5,18 +5,9 @@
  */
 package easycheckserver.test;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import static easycheckserver.utils.NetUtils.buildUrl;
+import static easycheckserver.utils.NetUtils.doPostRequest;
 import java.net.URL;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Toni
@@ -31,13 +22,13 @@ public class TestPostMethod {
     }
 
     public TestPostMethod() {
-        //inserirServei("Mallorca - Menorca", "11/11/2017","10:00","11:00",1);
-        //actualitzarServei(10,"Mallorca - Menorca", "11/11/2017","10:00","21:00",1);
-        //borrarServei(11);
-        //borrarTreballador("2");
-        //assignarTreballador("7", "2");
-        //inserirTreballador("Carles", "Puig", "Puigdemont", "4444444k", "toni", "xxx", 0);
-        //actualitzarTreballador(4,"Carles", "TEST DE MODIFICACIó", "Puigdemont", "44444444k", "Puchi", "xxx", 0);
+        //inserirServei("TESTING INSERIR SERVEI", "11/11/2017","10:00","11:00",23);
+        //actualitzarServei(12,"Mallorca - Menorca", "11/11/2017","10:00","21:00",2);
+        //borrarServei(13);
+        borrarTreballador(23);
+        //assignarTreballador(2, 3);
+        //inserirTreballador("Carles", "Puig", "Puigdemont", "4444444k", "tonis", "xxx", 0);
+        //actualitzarTreballador(23,"Carles", "Puig", "Puigdemont", "5555555k", "Puchi", "xxx", 0);
     }
 
   
@@ -61,13 +52,13 @@ public class TestPostMethod {
         return doPostRequest(url, query);
     }
 
-    public String borrarTreballador(String idTreballador) {
+    public String borrarTreballador(int idTreballador) {
         String query = buildQueryBorrarTreballador(idTreballador);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
         return doPostRequest(url, query);
     }
 
-    public String assignarTreballador(String idServei, String idTreballador) {
+    public String assignarTreballador(int idServei, int idTreballador) {
         String query = buildQueryAssignarTreballador(idServei, idTreballador);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);         
         return doPostRequest(url, query);
@@ -85,56 +76,8 @@ public class TestPostMethod {
         return doPostRequest(url, query);
     }
 
-    public static String doPostRequest(URL url, String parameters) {
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Content-Length", "" + Integer.toString(parameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            //Envia request
-            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.writeBytes(parameters);
-            wr.flush();
-            wr.close();
-
-            //Rep resposta
-            String responseBody = "";
-            if (connection.getResponseCode() == 200) {
-                InputStream response = connection.getInputStream();
-                Scanner scanner = new Scanner(response);
-                responseBody = scanner.useDelimiter("\\A").next();
-            }
-            
-            System.out.println(responseBody);
-            return responseBody;
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return "";
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-    }
-
-    public URL buildUrl(String host, int port, String path, String query) {
-        try {
-            return new URI("http", null, host, port, path, query, null).toURL();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(TestDescargaTodo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(TestDescargaTodo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public String buildQueryAssignarTreballador(String idServei, String idTreballador) {
+   
+    public String buildQueryAssignarTreballador(int idServei, int idTreballador) {
         return "idservei=" + idServei + "&idtreballador=" + idTreballador;
     }
 
@@ -146,7 +89,7 @@ public class TestPostMethod {
         return "id=" + id + "&nom=" + nom + "&cognom1=" + cognom1 + "&cognom2=" + cognom2 + "&dni=" + dni + "&esadmin=" + esadmin + "&login=" + login + "&password=" + password;
     }
 
-    private String buildQueryBorrarTreballador(String idTreballador) {
+    private String buildQueryBorrarTreballador(int idTreballador) {
         return "borrarid=" + idTreballador;
     }
 

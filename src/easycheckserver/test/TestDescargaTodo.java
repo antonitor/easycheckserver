@@ -10,20 +10,10 @@ import com.google.gson.reflect.TypeToken;
 import easycheckserver.model.Reserva;
 import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import static easycheckserver.utils.NetUtils.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -42,39 +32,6 @@ public class TestDescargaTodo {
         obtenirTreballadorsDelServer();
     }
 
-    public String doGetRequest(URL url) {
-        String responseBody = "";
-        try {
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            //String userCredentials = "Antoni:xxx";
-            //String basicAuth = Base64.getEncoder().encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8));            
-            //connection.setRequestProperty ("Authorization", "Basic "+ userCredentials);
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-            System.out.println(connection.getContentType());
-            System.out.print(connection.getResponseMessage() + " ");
-            System.out.println(responseCode);
-            if (responseCode == 200) {
-                InputStream response = connection.getInputStream();
-                Scanner scanner = new Scanner(response);
-                responseBody = scanner.useDelimiter("\\A").next();
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(TestClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return responseBody;
-    }
-
-    public URL buildUrl(String host, int port, String path, String query) {
-        try {
-            return new URI("http", null, host, port, path, query, null).toURL();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(TestDescargaTodo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(TestDescargaTodo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
 
     public List<Treballador> obtenirTreballadorsDelServer() {
         String json = "";
@@ -109,7 +66,6 @@ public class TestDescargaTodo {
             }
             System.out.println();
         }
-
         return llistaDeTreballadors;
     }
 }
