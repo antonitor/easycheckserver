@@ -607,6 +607,8 @@ public class GestorPersistencia {
                 } else {
                     response.setMessage(ex.getMessage());
                 }
+            } else {
+                response.setMessage(ex.getMessage());
             }
         } finally {
             closeStatement(stm);
@@ -649,6 +651,8 @@ public class GestorPersistencia {
                 } else {
                     response.setMessage(ex.getMessage());
                 }
+            } else {
+                response.setMessage(ex.getMessage());
             }
         } finally {
             closeStatement(stm);

@@ -25,6 +25,12 @@ import java.util.logging.Logger;
 /**
  *
  * @author Toni
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
  */
 public class EasyCheckServer {
 
@@ -41,7 +47,7 @@ public class EasyCheckServer {
         server.createContext("/easycheckapi/servei", new ServeisHandler());
         server.createContext("/easycheckapi/treballador", new TreballadorsHandler());
         server.createContext("/easycheckapi/login", new LoginHandler());
-        server.setExecutor(null); // creates a default executor
+        server.setExecutor(null); // crea un executor per defecte
         server.start();
     }
 
@@ -176,9 +182,7 @@ public class EasyCheckServer {
             System.out.println("HTTP GET REQUEST: " + uri);
             if (query.containsKey("id")) {
                 String id = query.get("id");
-                if (!id.equals("1")) {
-                    response = parser.getTreballadorId(query.get("id"));
-                }
+                response = parser.getTreballadorId(query.get("id"));
             } else {
                 response = parser.getTreballadors();
             }
