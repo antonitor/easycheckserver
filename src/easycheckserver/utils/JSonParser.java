@@ -146,9 +146,9 @@ public class JSonParser {
         return gson.toJson(response);
     }
     
-    public String actualitzarTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
+    public String actualitzarTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login, String pass) {
         gestor.open();
-        PostResponse response = gestor.updateTreballador(id, nom, cognom1, cognom2, dni, admin, login);
+        PostResponse response = gestor.updateTreballador(id, nom, cognom1, cognom2, dni, admin, login, pass);
         gestor.close();
         return gson.toJson(response);
     }

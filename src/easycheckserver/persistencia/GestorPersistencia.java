@@ -612,7 +612,7 @@ public class GestorPersistencia {
         return response;
     }
 
-    public PostResponse updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login) {
+    public PostResponse updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login, String pass) {
         if (id.equals("1")) {
             return new PostResponse(0, "No es pot modificar el usuari Administrador");
         }
@@ -624,7 +624,8 @@ public class GestorPersistencia {
                 + TaulaTreballador.COGNOM2 + "='" + cognom2 + "', "
                 + TaulaTreballador.DNI + "='" + dni + "', "
                 + TaulaTreballador.ADMIN + "='" + admin + "', "
-                + TaulaTreballador.LOGIN + "='" + login + "'"
+                + TaulaTreballador.LOGIN + "='" + login + "', "
+                + TaulaTreballador.PASSWORD + "='" + pass + "'"
                 + " WHERE " + TaulaTreballador.ID + "=" + id;
         try {
             stm = conn.createStatement();
