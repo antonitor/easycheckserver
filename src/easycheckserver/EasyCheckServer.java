@@ -27,10 +27,6 @@ import java.util.logging.Logger;
  * @author Toni
  * 
  * 
- * 
- * 
- * 
- * 
  */
 public class EasyCheckServer {
 

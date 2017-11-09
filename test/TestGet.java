@@ -38,7 +38,9 @@ public class TestGet extends TestCase {
     private static final String QR_CODE = "45R545WE45";
     private Gson gson = new Gson();
     
-        
+    /**
+     * Prova d'obtenir tots els treballadors
+     */    
     @Test
     public void testGetTreballadors(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
@@ -48,6 +50,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getNom(),NOM);
     }   
     
+    /**
+     * Prova d'obtenir el treballador corresponent a l'id
+     */
     @Test
     public void testGetTreballadorId(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", "id=1");
@@ -57,6 +62,9 @@ public class TestGet extends TestCase {
         assertEquals(treballador.getNom(),NOM);
     }
     
+    /**
+     * Prova d'obtenir tots els serveis
+     */
     @Test
     public void testGetServeis(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
@@ -67,6 +75,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getDescripcio(),DESCRIPCIO);
     }
     
+    /**
+     * Prova d'opbenir els serveis assignats a un treballador
+     */
     @Test
     public void testGetServeisTreballador(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4");
@@ -77,6 +88,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getDescripcio(),DESCRIPCIO);
     }
     
+    /**
+     * Prova d'obtenir els serveis amb una data específica assignats a un treballador
+     */
     @Test
     public void testGetServeisTreballadorData(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4&data=29/10/2017");
@@ -87,6 +101,10 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getDescripcio(),DESCRIPCIO);
     }
     
+    /**
+     * Prova d'obtenir els serveis amb una data i hora específiques assignats
+     * a un treballador
+     */
     @Test
     public void testGetServeisTreballadorDataHora(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4&data=29/10/2017&hora=10:00");
@@ -97,6 +115,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getDescripcio(),DESCRIPCIO);
     }
     
+    /**
+     * Prova d'obtenir els serveis amb una data específica
+     */
     @Test
     public void testGetServeisData(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "data=29/10/2017");
@@ -107,6 +128,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getDescripcio(),DESCRIPCIO);
     }
     
+    /**
+     * Prova d'obtenir els serveis amb una data i hora específiques
+     */
     @Test
     public void testGetServeisDataHora(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "data=29/10/2017&hora=10:00");
@@ -117,6 +141,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getDescripcio(),DESCRIPCIO);
     }
     
+    /**
+     * Prova d'obtenir totes les Reserves
+     */
     @Test
     public void testGetReserves(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", null);
@@ -127,6 +154,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getQr_code(),QR_CODE);
     }
     
+    /**
+     * Prova d'obtenir les reserves amb un localitzador específic
+     */
     @Test
     public void testGetReservesLoc(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "loc=123456");
@@ -137,6 +167,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getQr_code(),QR_CODE);
     }
     
+    /**
+     * Prova d'obtenir les reserves amb un QRcode específic
+     */
     @Test
     public void testGetReservesQRCode(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "qrcode=45R545WE45");
@@ -147,6 +180,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getQr_code(),QR_CODE);
     }
     
+    /**
+     * Prova d'obtenir les reserves amb una data específica
+     */
     @Test
     public void testGetReservesData(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "data=29/10/2017");
@@ -157,6 +193,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getQr_code(),QR_CODE);
     }
     
+    /**
+     * Prova d'obtenir les reserves amb un dni específic
+     */
      @Test
     public void testGetReservesDni(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "dni=41471860P");
@@ -167,6 +206,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getQr_code(),QR_CODE);
     }
     
+    /**
+     * Prova d'obtenir les reserves amb una data i hora específiques
+     */
     @Test
     public void testGetReservesDataHora(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "data=29/10/2017&hora=10:00");
@@ -177,6 +219,9 @@ public class TestGet extends TestCase {
         assertEquals(llista.get(0).getQr_code(),QR_CODE);
     }
     
+    /**
+     * Prova d'obtenir les reserves assignades a un servei
+     */
     @Test
     public void testGetReservesServei(){
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "servei=1");

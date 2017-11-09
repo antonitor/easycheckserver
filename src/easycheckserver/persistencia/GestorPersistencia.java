@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package easycheckserver.persistencia;
 
 import easycheckserver.model.Client;
@@ -26,7 +21,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- *
+ * 
+ * 
  * @author Toni
  */
 public class GestorPersistencia {
@@ -842,7 +838,7 @@ public class GestorPersistencia {
                 response.setMessage("Contrasenya incorrecta.");
                 if (treb.getPassword().equals(password)) {
                     response.setRequestCode(1);
-                    response.setMessage("Login correcte.");
+                    response.setMessage("" + treb.getId());
                     break;
                 }
             }

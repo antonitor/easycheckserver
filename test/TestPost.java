@@ -31,6 +31,9 @@ public class TestPost extends TestCase {
     private static final int PORT = 8080;
     private Gson gson = new Gson();
     
+    /**
+     * Prova d'inserir un treballador
+     */
     @Test
     public void test_a_InserirTreballador() {
         System.out.println("Test a:");
@@ -41,6 +44,9 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
    
+    /**
+     * Prova d'actualitzar el treballador del test a
+     */
     @Test
     public void test_b_ActualitzarTreballador() {
         System.out.println("Test b:");
@@ -51,6 +57,10 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
     
+    /**
+     * Prova d'inserir un treballador amb el mateix DNI que el del test a
+     * La inserció ha de fallar
+     */
     @Test
     public void test_c_InserirTreballadorDniDuplicat() {      
         System.out.println("Test c:");
@@ -61,6 +71,9 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),0);
     }
    
+    /**
+     * Prova d'inserir un nou servei
+     */
     @Test
     public void test_d_InserirServei() {
         System.out.println("Test d:");
@@ -71,6 +84,9 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
 
+    /**
+     * Prova d'actualitzar el servei inserit al test d
+     */
     @Test
     public void test_e_ActualitzarServei() {
         System.out.println("Test e:");
@@ -81,6 +97,11 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
     
+    /**
+     * Prova d'esborrar el treballador inserit al test a
+     * Com que el servei creat al test d s'ha assignat a aquest treballador
+     * l'esborrar ha de fallar
+     */
     @Test
     public void test_f_BorrarTreballadorAmbServeiAssignat() {
         System.out.println("Test f:");
@@ -91,6 +112,9 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),0);
     }
     
+    /**
+     * Prova d'assignar el treballador creat al test a al servei creat al test d
+     */
     @Test
     public void test_g_AssignarTreballador() {
         System.out.println("Test g:");
@@ -101,6 +125,9 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
     
+    /**
+     * Prova d'esborrar el servei creat al test d
+     */
     @Test
     public void test_h_BorrarServei() {
         System.out.println("Test h:");
@@ -111,6 +138,9 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
     
+    /**
+     * Prova d'esborrar el treballador creat al test a
+     */
     @Test
     public void test_i_BorrarTreballador() {
         System.out.println("Test i:");
@@ -121,30 +151,51 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
     
+    /**
+     * Genera el query per assignar un treballador a un servei
+     */
     public String buildQueryAssignarTreballador(int idServei, int idTreballador) {
         return "idservei=" + idServei + "&idtreballador=" + idTreballador;
     }
 
+    /**
+     * Genera el query per inserir un nou treballador
+     */
     public String buildQueryInserirTreballador(String nom, String cognom1, String cognom2, String dni, String login, String password, int esadmin) {
         return "nom=" + nom + "&cognom1=" + cognom1 + "&cognom2=" + cognom2 + "&dni=" + dni + "&esadmin=" + esadmin + "&login=" + login + "&password=" + password;
     }
 
+    /**
+     * Genera el query per actualitzar un treballador
+     */
     public String buildQueryActualitzarTreballador(int id, String nom, String cognom1, String cognom2, String dni, String login, String password, int esadmin) {
         return "id=" + id + "&nom=" + nom + "&cognom1=" + cognom1 + "&cognom2=" + cognom2 + "&dni=" + dni + "&esadmin=" + esadmin + "&login=" + login + "&password=" + password;
     }
 
+    /**
+     * Genera el query per esborrar un treballador
+     */
     private String buildQueryBorrarTreballador(int idTreballador) {
         return "borrarid=" + idTreballador;
     }
 
+    /**
+     * Genera el query per esborrar un servei
+     */
     private String buildQueryBorrarServei(int idServei) {
         return "borrarid=" + idServei;
     }
 
+    /**
+     * Genera el query per modificar un servei
+     */
     public String buildQueryActualitzarServei(int id, String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
         return "id=" + id + "&descripcio=" + descripcio + "&dataservei=" + dataservei + "&horainici=" + horaInici + "&horafinal=" + horaFinal + "&idtreballador=" + idTreballador;
     }
 
+    /**
+     * Genera el query per inserir un nou servei
+     */
     public String buildQueryInserirServei(String descripcio, String dataservei, String horaInici, String horaFinal, int idTreballador) {
         return "descripcio=" + descripcio + "&dataservei=" + dataservei + "&horainici=" + horaInici + "&horafinal=" + horaFinal + "&idtreballador=" + idTreballador;
     } 

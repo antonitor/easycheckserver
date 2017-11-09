@@ -29,7 +29,9 @@ public class TestLogin extends TestCase {
     private static final String PASSWORD = "admin";
     private Gson gson = new Gson();
     
-        
+    /**
+     * Prova de fer una petició de login correcta
+     */    
     @Test
     public void testLoginCorrecte(){
         String query = buildQueryLogin(USER,PASSWORD);
@@ -39,6 +41,9 @@ public class TestLogin extends TestCase {
         assertEquals(response.getRequestCode(),1);
     }
     
+    /**
+     * Prova de fer una petició de login amb contrasenya incorrecta
+     */
     @Test
     public void testLoginPasswordIncorrecte(){
         String query = buildQueryLogin(USER,"x");
@@ -48,6 +53,9 @@ public class TestLogin extends TestCase {
         assertEquals(response.getRequestCode(),0);
     } 
     
+    /**
+     * Prova de fer una petició de login amb usuari incorrecte
+     */
     @Test
     public void testLoginUsuariIncorrecte(){
         String query = buildQueryLogin("x",PASSWORD);
@@ -58,6 +66,9 @@ public class TestLogin extends TestCase {
     } 
     
 
+    /**
+     * Genera el query per fer una petició de login
+     */
     public String buildQueryLogin(String user, String password) {
         return "user=" + user + "&pass=" + password;
     }
