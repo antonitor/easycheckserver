@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 
- * 
+ *
+ *
  * @author Toni
  */
 public class GestorPersistencia {
@@ -203,7 +203,7 @@ public class GestorPersistencia {
             closeStatement(stm);
         }
         return llista;
-    }    
+    }
 
     public List<Reserva> getReservesQRCode(String qrcode) {
         List<Reserva> llista = new ArrayList<>();
@@ -466,7 +466,7 @@ public class GestorPersistencia {
         try {
             stm = conn.prepareStatement("SELECT * FROM " + TaulaServeis.NOM_TAULA + " WHERE " + TaulaServeis.ID_TREBALLADOR + " = ?");
             stm.setInt(1, idTreballador);
-            ResultSet rs = stm.executeQuery();            
+            ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt(TaulaServeis.ID);
                 String descripcio = rs.getString(TaulaServeis.DESCRIPCIO);
@@ -810,7 +810,7 @@ public class GestorPersistencia {
         }
         return response;
     }
-    
+
     public void closeStatement(PreparedStatement stm) {
         try {
             if (stm != null && !stm.isClosed()) {
@@ -820,7 +820,7 @@ public class GestorPersistencia {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
         }
     }
-    
+
     public void closeStatement(Statement stm) {
         try {
             if (stm != null && !stm.isClosed()) {
@@ -839,7 +839,7 @@ public class GestorPersistencia {
                 response.setMessage("Contrasenya incorrecta.");
                 if (treb.getPassword().equals(password)) {
                     response.setRequestCode(1);
-                    response.setMessage("" + treb.getId());
+                    response.setMessage("" + treb.getEsAdmin());
                     break;
                 }
             }
