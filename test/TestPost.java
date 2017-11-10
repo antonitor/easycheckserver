@@ -1,9 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * EasyCheck Server v 1.6 - MarcarniApp
+ * 
+ * DAM_M13B0 Projecte de desenvolupament d'aplicacions multiplataforma
+ * 
+ * Semestre 1 - Curs 2017 - 2018
  */
-
 import com.google.gson.Gson;
 import static easycheckserver.utils.NetUtils.buildUrl;
 import static easycheckserver.utils.NetUtils.doPostRequest;

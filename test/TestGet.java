@@ -1,3 +1,10 @@
+/*
+ * EasyCheck Server v 1.6 - MarcarniApp
+ * 
+ * DAM_M13B0 Projecte de desenvolupament d'aplicacions multiplataforma
+ * 
+ * Semestre 1 - Curs 2017 - 2018
+ */
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import easycheckserver.model.Reserva;

@@ -1,3 +1,10 @@
+/*
+ * EasyCheck Server v 1.6 - MarcarniApp
+ * 
+ * DAM_M13B0 Projecte de desenvolupament d'aplicacions multiplataforma
+ * 
+ * Semestre 1 - Curs 2017 - 2018
+ */
 package easycheckserver.persistencia;
 
 import easycheckserver.model.Client;
@@ -21,7 +28,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- *
+ * Aquesta classe gestiona les crides a la base de dades per tal d'obtenir
+ * registres, així como insertar, modificar o eliminar-los.
  *
  * @author Toni
  */
@@ -33,6 +41,7 @@ public class GestorPersistencia {
     private final String USER = "marcarniuser";
     private final String PASS = "marcarnipass";
 
+    
     public GestorPersistencia() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -42,6 +51,9 @@ public class GestorPersistencia {
 
     }
 
+    /**
+     * Obre connexió amb la base de dades
+     */
     public void open() {
         try {
             driver = DriverManager.getDriver(URL);
@@ -54,6 +66,9 @@ public class GestorPersistencia {
         }
     }
 
+    /**
+     * Tanca la connexió amb la base de dades
+     */
     public void close() {
         try {
             if (conn != null && !conn.isClosed()) {
@@ -64,6 +79,13 @@ public class GestorPersistencia {
         }
     }
 
+    /**
+     * Busca a la base de dades el registre a la taula treballador amb l'id 
+     * que li pasem per paràmetre i torna un objecte de la classe Treballador
+     * 
+     * @param id corresponent al camp _id de la taula treballador
+     * @return objecte de la classe Treballador
+     */
     public Treballador getTreballadorId(int id) {
         Treballador treballador = null;
         PreparedStatement stm = null;
@@ -89,6 +111,12 @@ public class GestorPersistencia {
         return treballador;
     }
 
+    /**
+     * Consulta tots els registres de la taula treballador i els torna com
+     * una llista d'objectes de la classe Treballador.
+     * 
+     * @return llista d'objectes de la classe Treballador
+     */
     public List<Treballador> getTreballadors() {
         List<Treballador> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -115,6 +143,14 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula reserva els registres que corresponen amb el servei
+     * del qual li passem l'id per paràmetre, i torna una llista d'objectes
+     * de la clase Reserva
+     * 
+     * @param idServei corresponent al camp id_servei de la taula reserva
+     * @return llista d'objectes de la classe Reserva
+     */
     public List<Reserva> getReservesServei(int idServei) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -160,6 +196,12 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Consulta tots els registres de la taula reserva i els torna en forma
+     * de llista d'objectes de la clase Reserva
+     * 
+     * @return llista d'objectes de la classe Reserva 
+     */
     public List<Reserva> getReserves() {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -205,6 +247,13 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula reserva els registres amb qrcode corresponent al String
+     * que li passem per paràmetre, i els torna en forma d'objectes Reserva
+     * 
+     * @param qrcode corresponent a la columna qrcode de la taula reserva
+     * @return llista d'objectes Reserva
+     */
     public List<Reserva> getReservesQRCode(String qrcode) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -250,6 +299,13 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula reserva els registres amb localitzador corresponent al String
+     * que li passem per paràmetre, i els torna en forma d'objectes Reserva
+     * 
+     * @param loc corresponent a la columna localitzador de la taula reserva
+     * @return llista d'objectes Reserva
+     */
     public List<Reserva> getReservesLoc(String loc) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -295,6 +351,13 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula reserva els registres amb dni corresponent al String
+     * que li passem per paràmetre, i els torna en forma d'objectes Reserva
+     * 
+     * @param dni corresponent a la columna dni de la taula reserva
+     * @return llista d'objectes Reserva
+     */
     public List<Reserva> getReservesDni(String dni) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -340,6 +403,13 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula reserva els registres amb data corresponent al String
+     * que li passem per paràmetre, i els torna en forma d'objectes Reserva
+     * 
+     * @param data corresponent a la columna data_servei de la taula serveis
+     * @return llista d'objectes Reserva
+     */
     public List<Reserva> getReservesData(String data) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -388,7 +458,14 @@ public class GestorPersistencia {
         return llista;
     }
 
-    //
+    /**
+     * Busca a la taula reserva els registres amb dni i data corresponent als Strings
+     * que li passem per paràmetre, i els torna en forma d'objectes Reserva
+     * 
+     * @param dni corresponent a la columna dni de la taula reserva
+     * @param data corresponent a la columna data_servei de la taula servei
+     * @return llista d'objectes Reserva
+     */
     public List<Reserva> getReservesDniData(String dni, String data) {
         List<Reserva> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -437,6 +514,12 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Consulta tots els registres de la taula serveis i els retorna en forma
+     * de llista d'objectes Servei.
+     * 
+     * @return llista d'objectes Servei
+     */
     public List<Servei> getServeis() {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -460,6 +543,13 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula servei els registres amb id_treballador corresponent al String
+     * que li passem per paràmetre, i els torna en forma d'objectes Servei
+     * 
+     * @param idTreballador corresponent amb la columna id_treballador de la taula serveis
+     * @return llista d'objectes Servei
+     */
     public List<Servei> getServeisTreballador(int idTreballador) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -483,6 +573,13 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula servei els registres amb data_servei corresponent al String
+     * que li passem per paràmetre, i els torna en forma d'objectes Servei
+     * 
+     * @param data corresponent amb la columna data_servei de la taula serveis
+     * @return llista d'objectes Servei
+     */
     public List<Servei> getServeisData(String data) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -506,6 +603,15 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula servei els registres amb data_servei i hora_inici
+     * corresponent als Strings que li passem per paràmetre, i els torna en
+     * forma de llista d'objectes Servei
+     * 
+     * @param data corresponent amb el camp data_servei de la taula serveis
+     * @param hora corresponent amb el camp hora_inici de la taula serveis
+     * @return llista d'objectes Servei
+     */
     public List<Servei> getServeisDataHora(String data, String hora) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -529,6 +635,15 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula servei els registres amb data_servei i treballador_id
+     * corresponent als Strings que li passem per paràmetre, i els torna en
+     * forma de llista d'objectes Servei
+     * 
+     * @param idTreballador  corresponent amb la columna id_treballador de la taula serveis
+     * @param data corresponent amb la columna data_servei de la taula serveis
+     * @return llista d'objectes Servei
+     */
     public List<Servei> getServeisTreballadorData(int idTreballador, String data) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -550,6 +665,16 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Busca a la taula servei els registres amb data_servei, treballador_id
+     * i hora_inici corresponent als Strings que li passem per paràmetre, i els torna en
+     * forma de llista d'objectes Servei
+     * 
+     * @param idTreballador  corresponent amb la columna id_treballador de la taula serveis
+     * @param data corresponent amb la columna data_servei de la taula serveis
+     * @param hora corresponent amb la columna hora_inici de la taula serveis
+     * @return llista d'objectes Servei
+     */
     public List<Servei> getServeisTreballadorDataHora(int idTreballador, String data, String hora) {
         List<Servei> llista = new ArrayList<>();
         PreparedStatement stm = null;
@@ -570,6 +695,19 @@ public class GestorPersistencia {
         return llista;
     }
 
+    /**
+     * Intenta inserir un nou registre a la taula treballador amb els paràmetres 
+     * String, i torna un objecte PostResponse amb els resultats de la consulta.
+     * 
+     * @param nom corresponent amb la columna nom de la taula treballadoor
+     * @param cognom1 corresponent amb la columna cognom1 de la taula treballadoor
+     * @param cognom2 corresponent amb la columna cognom2 de la taula treballadoor
+     * @param dni corresponent amb la columna dni de la taula treballadoor
+     * @param admin corresponent amb la columna esadmin de la taula treballadoor
+     * @param login corresponent amb la columna login de la taula treballadoor
+     * @param password corresponent amb la columna password de la taula treballadoor
+     * @return objecte PostResponse
+     */
     public PostResponse insertTreballador(String nom, String cognom1, String cognom2, String dni, String admin, String login, String password) {
         PostResponse response = new PostResponse();
         Statement stm = null;
@@ -612,6 +750,21 @@ public class GestorPersistencia {
         return response;
     }
 
+    /**
+     * Intenta actualitzar el registre amb _id corresponent al paràmetre id a la 
+     * taula treballador amb els paràmetres String, i torna un objecte PostResponse
+     * amb els resultats de la consulta.
+     * 
+     * @param id corresponent amb la columna _id de la taula treballadoor
+     * @param nom corresponent amb la columna nom de la taula treballadoor
+     * @param cognom1 corresponent amb la columna cognom1 de la taula treballadoor
+     * @param cognom2 corresponent amb la columna cognom2 de la taula treballadoor
+     * @param dni corresponent amb la columna dni de la taula treballadoor
+     * @param admin corresponent amb la columna esadmin de la taula treballadoor
+     * @param login corresponent amb la columna login de la taula treballadoor
+     * @param pass corresponent amb la columna password de la taula treballadoor
+     * @return objecte PostResponse
+     */
     public PostResponse updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login, String pass) {
         if (id.equals("1")) {
             return new PostResponse(0, "No es pot modificar el usuari Administrador");
@@ -657,6 +810,15 @@ public class GestorPersistencia {
         return response;
     }
 
+    /**
+     * Intenta modificar el camp id_treballador amb el paràmetre idTreballador al
+     * registre de la taula serveis amb _id corresponent al paràmetre idServei.
+     * Retorna un objecte PostResponse amb els resultats de la consulta.
+     * 
+     * @param idServei corresponent amb la columna _id de la taula serveis
+     * @param idTreballador corresponent amb la columna id_treballador de la taula serveis
+     * @return objecte PostResponse
+     */
     public PostResponse assignarTreballador(String idServei, String idTreballador) {
         if (idTreballador.equals("1")) {
             return new PostResponse(0, "No es poden assignar Serveis al usuari Administrador");
@@ -686,6 +848,14 @@ public class GestorPersistencia {
         return response;
     }
 
+    /**
+     * Intenta esborrar el registre de la taula treballador amb _id corresponent
+     * al paràmetre idTreballador. 
+     * Torna un objecte PostResponse amb els resultats de la consulta.
+     * 
+     * @param idTreballador corresponent amb la columna _id de la taula treballador
+     * @return objecte PostResponse
+     */
     public PostResponse borrarTreballador(String idTreballador) {
         PostResponse response = new PostResponse();
         if (idTreballador.equals("1")) {
@@ -720,6 +890,18 @@ public class GestorPersistencia {
         return response;
     }
 
+    /**
+     * Intenta inserir un nou registre a la taula serveis amb les dades que reb 
+     * com a paràmetres. Torna un objecte PostResponse amb els resultats de 
+     * la consulta.
+     * 
+     * @param descripcio corresponent amb la columna descripcio de la taula serveis
+     * @param dataServei corresponent amb la data_servei descripcio de la taula serveis
+     * @param horaInici corresponent amb la hora_inici descripcio de la taula serveis
+     * @param horaFinal corresponent amb la hora_final descripcio de la taula serveis
+     * @param idTreballador corresponent amb la id_treballador descripcio de la taula serveis
+     * @return objecte PostResponse
+     */
     public PostResponse insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
         PostResponse response = new PostResponse();
         Statement stm = null;
@@ -751,6 +933,19 @@ public class GestorPersistencia {
         return response;
     }
 
+    /**
+     * Intenta actualitzar el registre a la taula serveis corresponent al _id 
+     * amb les dades que reb com a paràmetres. Torna un objecte PostResponse 
+     * amb els resultats de la consulta.
+     * 
+     * @param id corresponent amb la columna _id de la taula serveis
+     * @param descripcio corresponent amb la columna descripcio de la taula serveis
+     * @param dataServei corresponent amb la data_servei descripcio de la taula serveis
+     * @param horaInici corresponent amb la hora_inici descripcio de la taula serveis
+     * @param horaFinal corresponent amb la hora_final descripcio de la taula serveis
+     * @param idTreballador corresponent amb la id_treballador descripcio de la taula serveis
+     * @return objecte PostResponse
+     */
     public PostResponse updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
         PostResponse response = new PostResponse();
         Statement stm = null;
@@ -781,6 +976,14 @@ public class GestorPersistencia {
         return response;
     }
 
+    /**
+     * Intenta esborrar el registre de la taula serveis corresponent amb l'id
+     * que reb per paràmetre. Retorna un objecte PostResponse amb els resultats
+     * de la consulta.
+     * 
+     * @param idServei corresponent amb la columna _id de la taula serveis
+     * @return objecte PostResponse
+     */
     public PostResponse esborrarServei(String idServei) {
         PostResponse response = new PostResponse();
         open();
@@ -811,16 +1014,10 @@ public class GestorPersistencia {
         return response;
     }
 
-    public void closeStatement(PreparedStatement stm) {
-        try {
-            if (stm != null && !stm.isClosed()) {
-                stm.close();
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
-        }
-    }
-
+    /**
+     * Tanca el Statement
+     * @param stm 
+     */
     public void closeStatement(Statement stm) {
         try {
             if (stm != null && !stm.isClosed()) {
@@ -831,6 +1028,17 @@ public class GestorPersistencia {
         }
     }
 
+    /**
+     * Comprova si l'usuari existeix a la taula treballador i si coincideix
+     * amb el password que reb per paràmetre. Torna un objecte PostResponse
+     * amb els resultats de la consulta. Si el login és correcte torna codi 1 i 
+     * al missatge l'id del treballador i un 1 si es administrador o un 0 si no
+     * ho és.
+     * 
+     * @param user corresponent a la columna nom de la taula treballador
+     * @param password corresponent a la columna password de la taula treballador
+     * @return objecte PostResponse
+     */
     public PostResponse login(String user, String password) {
         PostResponse response = new PostResponse(0, "Usuari incorrecte.");
         List<Treballador> llista = getTreballadors();
