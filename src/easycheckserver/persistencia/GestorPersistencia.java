@@ -839,7 +839,7 @@ public class GestorPersistencia {
                 response.setMessage("Contrasenya incorrecta.");
                 if (treb.getPassword().equals(password)) {
                     response.setRequestCode(1);
-                    response.setMessage("" + treb.getEsAdmin());
+                    response.setMessage(("" + treb.getId()+"Admin:"+treb.getEsAdmin()));
                     break;
                 }
             }
