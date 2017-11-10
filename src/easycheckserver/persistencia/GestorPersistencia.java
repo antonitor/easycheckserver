@@ -41,6 +41,9 @@ public class GestorPersistencia {
     private final String USER = "marcarniuser";
     private final String PASS = "marcarnipass";
 
+    /**
+     * Al construir el Gestor de Persistencia comprova que existeix el Driver
+     */
     public GestorPersistencia() {
         try {
             Class.forName("org.postgresql.Driver");

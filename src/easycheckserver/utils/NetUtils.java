@@ -20,11 +20,19 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- *
+ * Grup de mètodes static per desenvolupar tasques símples
+ * 
  * @author Toni
  */
 public class NetUtils {
 
+    /**
+     * Mètode utilitzat als jocs de proves per tal d'executar una petició
+     * http amb el mètode GET amb la URL que obtè per paràmetre.
+     * 
+     * @param url URL de la petició GET
+     * @return cadena de caràcters amb la resposta a la petició
+     */
     public static String doGetRequest(URL url) {
         String responseBody = "";
         try {
@@ -45,25 +53,34 @@ public class NetUtils {
         return responseBody;
     }
 
+    /**
+     * Mètode utilitzat als jocs de proves per tal d'executar una petició
+     * http amb el mètode POST amb la URL i el query que obtè per paràmetre
+     * 
+     * @param url URL de la petició GET
+     * @param parameters query de la petició POST
+     * @return cadena de caràcters amb la resposta a la petició
+     */
     public static String doPostRequest(URL url, String parameters) {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
+            //Construeix el Header de la petició:
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", "" + Integer.toString(parameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-
+            connection.setRequestProperty("Content-Language", "en-US");            
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
-            //Send request
+            //Envia la petició POST:
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(parameters);
             wr.flush();
             wr.close();
 
+            //Recull la resposta de la petició POST:
             String responseBody = "";
             if (connection.getResponseCode() == 200) {
                 InputStream response = connection.getInputStream();
@@ -84,6 +101,15 @@ public class NetUtils {
         }
     }
 
+    /**
+     * Construeix i torna un nou objecte URL amb les dades que obtè per paràmetre.
+     * 
+     * @param host host de l'url
+     * @param port port de l'url
+     * @param path path de l'url
+     * @param query query de l'url
+     * @return objecte URL
+     */
     public static URL buildUrl(String host, int port, String path, String query) {
         try {
             return new URI("http", null, host, port, path, query, null).toURL();
@@ -93,6 +119,12 @@ public class NetUtils {
         }
     }
 
+    /**
+     * Transforma el query obtingut per paràmetre en un objecte Map
+     * 
+     * @param query cadena de caràcters amb el query
+     * @return objecte Map
+     */
     public static Map<String, String> queryToMap(String query) {
         Map<String, String> result = new HashMap<>();
         if (query != null) {

@@ -38,7 +38,7 @@ public class EasyCheckServer {
     }
 
     /**
-     *
+     * Posada en marxa del servidor http
      * @param args
      * @throws Exception
      */
@@ -54,6 +54,13 @@ public class EasyCheckServer {
         server.start();
     }
 
+    /**
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
+     * una petició http al directori reserva.
+     * 
+     * Obté la resposta a la petició del mètode handleReservesRequest, formata
+     * el header i envía la resposta.
+     */
     static class ReservesHandler implements HttpHandler {
 
         @Override
@@ -67,6 +74,13 @@ public class EasyCheckServer {
         }
     }
 
+    /**
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
+     * una petició http al directori servei.
+     * 
+     * Obté la resposta a la petició del mètode handleServeisRequest, formata
+     * el header i envía la resposta.
+     */
     static class ServeisHandler implements HttpHandler {
 
         @Override
@@ -80,6 +94,13 @@ public class EasyCheckServer {
         }
     }
 
+    /**
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
+     * una petició http al directori treballador.
+     * 
+     * Obté la resposta a la petició del mètode handleTreballadorRequest, formata
+     * el header i envía la resposta.
+     */
     static class TreballadorsHandler implements HttpHandler {
 
         @Override
@@ -93,6 +114,13 @@ public class EasyCheckServer {
         }
     }
 
+    /**
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
+     * una petició http al directori login.
+     * 
+     * Obté la resposta a la petició del mètode handleLoginRequest, formata
+     * el header i envía la resposta.
+     */
     static class LoginHandler implements HttpHandler {
 
         @Override
@@ -106,6 +134,15 @@ public class EasyCheckServer {
 
     }
 
+    /**
+     * Aquest mètode tan sols gestiona peticions http amb mètode GET:
+     * Extreu el query de l'URI i en funció dels paràmetres d'aquest query
+     * truca un mètode de la classe JsonParser del que obtindrà el resultat
+     * de la consulta en formàt Json
+     * 
+     * @param t objecte HttpExange
+     * @return cadena de caràcters amb la resposta en format json
+     */
     private static String handleReservesRequest(HttpExchange t) {
         String response = "";
         String requestMethod = t.getRequestMethod();
@@ -133,7 +170,20 @@ public class EasyCheckServer {
         }
         return response;
     }
-
+    
+    /**
+     * Aquest mètode gestiona peticions http amb mètode GET o POST:
+     * Si és GET extreu el query de l'URI i en funció dels paràmetres d'aquest query
+     * truca un mètode de la classe JsonParser del que obtindrà el resultat
+     * de la consulta en formàt Json
+     * 
+     * Si és POST extreu el query del cos de la petició mitjançant el mètode getPostQuery,
+     * truca el mètode de la classe JsonParser corresponent i retorna el resultat
+     * en formàt Json.
+     * 
+     * @param t objecte HttpExange
+     * @return cadena de caràcters amb la resposta en format json
+     */
     private static String handleServeisRequest(HttpExchange t) {
         String response = "";
         String requestMethod = t.getRequestMethod();
@@ -176,6 +226,19 @@ public class EasyCheckServer {
         return response;
     }
 
+    /**
+     * Aquest mètode gestiona peticions http amb mètode GET o POST:
+     * Si és GET extreu el query de l'URI i en funció dels paràmetres d'aquest query
+     * truca un mètode de la classe JsonParser del que obtindrà el resultat
+     * de la consulta en formàt Json
+     * 
+     * Si és POST extreu el query del cos de la petició mitjançant el mètode getPostQuery,
+     * truca el mètode de la classe JsonParser corresponent i retorna el resultat
+     * en formàt Json.
+     * 
+     * @param t objecte HttpExange
+     * @return cadena de caràcters amb la resposta en format json
+     */
     private static String handleTreballadorRequest(HttpExchange t) {
         String response = "";
         String requestMethod = t.getRequestMethod();
@@ -211,6 +274,15 @@ public class EasyCheckServer {
         return response;
     }
 
+    /**
+     * Aquest mètode gestiona peticions http amb mètode POST:
+     * Extreu el query del cos de la petició mitjançant el mètode getPostQuery,
+     * truca el mètode de la classe JsonParser corresponent i retorna el resultat
+     * en formàt Json.
+     * 
+     * @param t objecte HttpExange
+     * @return cadena de caràcters amb la resposta en format json
+     */
     private static String handleLoginRequest(HttpExchange t) {
         String response = "";
         String requestMethod = t.getRequestMethod();
@@ -225,6 +297,13 @@ public class EasyCheckServer {
         return response;
     }
 
+    /**
+     * Obté el query del body de la petició post i la retorna com un objecte
+     * Map<String, String>
+     * 
+     * @param t objecte HttpExange
+     * @return objecte Map<String, String>
+     */
     private static Map<String, String> getPostQuery(HttpExchange t) {
         InputStreamReader isr;
         Map<String, String> query = new HashMap<>();
