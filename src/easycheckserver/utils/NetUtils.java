@@ -27,9 +27,6 @@ public class NetUtils {
         String responseBody = "";
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            //String userCredentials = "Antoni:xxx";
-            //String basicAuth = Base64.getEncoder().encodeToString(userCredentials.getBytes(StandardCharsets.UTF_8));            
-            //connection.setRequestProperty ("Authorization", "Basic "+ userCredentials);
             connection.setRequestMethod("GET");
             int responseCode = connection.getResponseCode();            
             System.out.println("Response: " + connection.getResponseMessage() + " " + responseCode);
@@ -92,14 +89,6 @@ public class NetUtils {
             ex.printStackTrace();
             return null;
         }
-    }
-
-    public static String buildQuery(String key1, String value1, String key2, String value2) {
-        return key1 + "=" + value1 + "&" + key2 + "=" + value2;
-    }
-
-    public static String buildQuery(String key, String value) {
-        return key + "=" + value;
     }
 
     public static Map<String, String> queryToMap(String query) {
