@@ -37,6 +37,11 @@ public class EasyCheckServer {
     private EasyCheckServer() {
     }
 
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         parser = new JSonParser();
 

@@ -41,14 +41,12 @@ public class GestorPersistencia {
     private final String USER = "marcarniuser";
     private final String PASS = "marcarnipass";
 
-    
     public GestorPersistencia() {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             System.out.println("JDBC Controller Not Found!!");
         }
-
     }
 
     /**
