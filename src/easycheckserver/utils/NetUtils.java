@@ -140,5 +140,21 @@ public class NetUtils {
         }
         return result;
     }
+    
+    
+    /**
+     * Prova de transformar un String en int, si falla torna un 0
+     * 
+     * @param integer cadena de caràcters amb l'enter
+     * @return  int
+     */
+    public static int stringToInt(String integer) {
+        try {
+            return Integer.parseInt(integer);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+   
 
 }

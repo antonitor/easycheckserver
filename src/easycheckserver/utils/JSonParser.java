@@ -13,6 +13,7 @@ import easycheckserver.model.Reserva;
 import easycheckserver.model.Servei;
 import easycheckserver.model.Treballador;
 import easycheckserver.persistencia.GestorPersistencia;
+import static easycheckserver.utils.NetUtils.stringToInt;
 import java.util.List;
 
 /**
@@ -341,18 +342,5 @@ public class JSonParser {
         gestor.close();
         return gson.toJson(response);
     }
-
-    /**
-     * Prova de transformar un String en int, si falla torna un 0
-     * 
-     * @param integer cadena de caràcters amb l'enter
-     * @return  int
-     */
-    private int stringToInt(String integer) {
-        try {
-            return Integer.parseInt(integer);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
+    
 }

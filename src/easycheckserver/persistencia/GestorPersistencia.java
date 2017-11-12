@@ -16,6 +16,7 @@ import easycheckserver.persistencia.DbContract.TaulaClient;
 import easycheckserver.persistencia.DbContract.TaulaReserva;
 import easycheckserver.persistencia.DbContract.TaulaServeis;
 import easycheckserver.persistencia.DbContract.TaulaTreballador;
+import static easycheckserver.utils.NetUtils.stringToInt;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -23,7 +24,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -838,6 +842,9 @@ public class GestorPersistencia {
         if (idTreballador.equals("1")) {
             return new PostResponse(0, "No es poden assignar Serveis al usuari Administrador");
         }
+        if (dateOverlaps(idServei, idTreballador)) {
+            return new PostResponse(0, "Error al assignar treballador: ja te un altre servei assignat durant aquest horari.");
+        }
         PostResponse response = new PostResponse();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
@@ -928,6 +935,9 @@ public class GestorPersistencia {
      * @return objecte PostResponse
      */
     public PostResponse insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        if (dateOverlaps(idTreballador, dataServei, horaInici, horaFinal)) {
+            return new PostResponse(0, "No s'ha pogut crear el servei: El treballador ja te un servei assignat durant aquest horari.");
+        }
         PostResponse response = new PostResponse();
         Statement stm = null;
         String insertQuery = "INSERT INTO " + TaulaServeis.NOM_TAULA + "("
@@ -952,7 +962,7 @@ public class GestorPersistencia {
             System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
-                response.setMessage("Error al crear servei: el treballador ja te un altre servei assignat el mateix dia i hora, i se l'hi ha concedit el do de la ubiqüitat.");
+                response.setMessage("Error al crear servei: el treballador ja te un altre servei assignat el mateix dia i hora.");
             } else {
                 response.setMessage(ex.getMessage());
             }
@@ -981,6 +991,9 @@ public class GestorPersistencia {
      * @return objecte PostResponse
      */
     public PostResponse updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        if (dateOverlaps(idTreballador, dataServei, horaInici, horaFinal)) {
+            return new PostResponse(0, "No s'ha pogut modificar el servei. El treballador ja te un servei assignat duarant aquest horari.");
+        }
         PostResponse response = new PostResponse();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
@@ -1002,7 +1015,7 @@ public class GestorPersistencia {
             }
         } catch (SQLException ex) {
             if (ex.getSQLState().equals("23505")) {
-                response.setMessage("Error al modificar servei: el treballador ja te un altre servei assignat el mateix dia i hora, i se l'hi ha concedit el do de la ubiqüitat.");
+                response.setMessage("Error al modificar servei: el treballador ja te un altre servei assignat el mateix dia i hora.");
             } else {
                 response.setMessage(ex.getMessage());
             }
@@ -1091,6 +1104,88 @@ public class GestorPersistencia {
             }
         }
         return response;
+    }
+
+    /**
+     * Comprova si el servei que es vol assignar a un treballador coincideix en horari
+     * amb algún dels serveis que ja tenia assignat.
+     * 
+     * @param idTreballador id del treballador
+     * @param dataServei data del servei que es vol assignar
+     * @param horaInici hora d'inici del servei que es vol assignar
+     * @param horaFinal hora final del servei que es vol assignar
+     * @return true si l'horari coincideix amb algún d'un altre servei ja assignat
+     */
+    private boolean dateOverlaps(String idTreballador, String dataServei, String horaInici, String horaFinal) {
+        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date dataInici;
+        Date dataFinal;
+        try {
+            //Cream un objecte Date amb data i hora per la hora inici i un altre per la hora final del servei que es vol assignar
+            Date dataActualInici = parser.parse(dataServei + " " + horaInici);
+            Date dataActualFinal = parser.parse(dataServei + " " + horaFinal);
+            List<Servei> serveisTreballador = this.getServeisTreballador(stringToInt(idTreballador));
+            for (Servei servei : serveisTreballador) {
+                //Es comprova si els horaris es sobreposen amb algun dels serveis que el treballador ja te assignats
+                dataInici = parser.parse(servei.getData_servei() + " " + servei.getHora_inici());
+                dataFinal = parser.parse(servei.getData_servei() + " " + servei.getHora_final());
+                if (dataInici.before(dataActualInici) && dataFinal.after(dataActualInici)) {
+                    System.out.println("dataActualInici after dataInici & before dataFinal");
+                    return true; //Si la hora d'inici està entre l'hora d'inici i la final d'un servei ja assignat tornam true
+                } else if (dataInici.before(dataActualFinal) && dataFinal.after(dataActualFinal)) {
+                    System.out.println("dataActualFinal after dataInici & before dataFinal");
+                    return true; //Si la hora d'inici està entre l'hora d'inici i la final d'un servei ja assignat tornam true
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false; //En cas d'error al transformar de String a Date tornem false
+        }
+        return false; //Si no s'ha trobat cap horari solapat tornem false
+    }
+
+    /**
+     * Comprova si el servei que es vol assignar a un treballador coincideix en horari
+     * amb algún dels serveis que ja tenia assignat.
+     * 
+     * @param idServei id del servei que es vol assignar
+     * @param idTreballador id del treballador al que se li vol assignar el servei
+     * @return true si l'horari coincideix amb algún d'un altre servei ja assignat 
+     */
+    private boolean dateOverlaps(String idServei, String idTreballador) {
+        int intIdServei = stringToInt(idServei);
+        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date dataInici;  
+        Date dataFinal;
+        List<Servei> serveisTreballador = this.getServeisTreballador(stringToInt(idTreballador));
+        Servei serveiActual = null;
+        for (Servei servei : serveisTreballador) {
+            if (servei.getId() == intIdServei) {
+                serveiActual = servei; //Obteni el servei que es vol assignar
+            }
+        }
+        try {
+            //Cream un objecte Date amb data i hora per la hora inici i un altre per la hora final del servei que es vol assignar
+            Date dataActualInici = parser.parse(serveiActual.getData_servei() + " " + serveiActual.getHora_inici());
+            Date dataActualFinal = parser.parse(serveiActual.getData_servei() + " " + serveiActual.getHora_final());
+            //Es comprova si els horaris es sobreposen amb algun dels serveis que el treballador ja te assignats
+            for (Servei servei : serveisTreballador) {                
+                if (servei.getId() != intIdServei) {
+                    dataInici = parser.parse(servei.getData_servei() + " " + servei.getHora_inici());
+                    dataFinal = parser.parse(servei.getData_servei() + " " + servei.getHora_final());
+                    if (dataInici.before(dataActualInici) && dataFinal.after(dataActualInici)) {
+                        return true; //Si la hora d'inici està entre l'hora d'inici i la final d'un servei ja assignat tornam true
+                    } else if (dataInici.before(dataActualFinal) && dataFinal.after(dataActualFinal)) {
+                        return true; //Si la hora final està entre l'hora d'inici i la final d'un servei ja assignat tornam true
+                    }
+                }
+
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false; //En cas d'error al transformar de String a Date tornem false
+        }
+        return false; //Si no s'ha trobat cap horari solapat tornem false
     }
 
 }
