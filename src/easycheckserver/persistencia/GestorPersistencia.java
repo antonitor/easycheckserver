@@ -1115,7 +1115,13 @@ public class GestorPersistencia {
     }
 
     /**
-     *
+     * Comprova que l'hora d'inici del servei no sigui posterior a l'hora de
+     * termini de la mateixa.
+     * 
+     * @param dataServei corresponent amb la columna data_servei de la taula serveis
+     * @param horaInici corresponent amb la columna hora_inici de la taula serveis
+     * @param horaFinal corresponent amb la columna hora_final de la taula serveis
+     * @return false si l'hora d'inici es posterior a l'hora final, false si no ho és      * 
      */
     private boolean validTime(String dataServei, String horaInici, String horaFinal) {
         SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm");        
