@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Aquesta classe gestiona les crides a la base de dades per tal d'obtenir
@@ -935,6 +937,9 @@ public class GestorPersistencia {
      * @return objecte PostResponse
      */
     public PostResponse insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        if (!validTime(dataServei, horaInici, horaFinal)){
+            return new PostResponse(0, "La hora de inici no pot ser despres de la hora final.");
+        }
         if (dateOverlaps(idTreballador, dataServei, horaInici, horaFinal)) {
             return new PostResponse(0, "No s'ha pogut crear el servei: El treballador ja te un servei assignat durant aquest horari.");
         }
@@ -991,6 +996,9 @@ public class GestorPersistencia {
      * @return objecte PostResponse
      */
     public PostResponse updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
+        if (!validTime(dataServei, horaInici, horaFinal)){
+            return new PostResponse(0, "La hora de inici no pot ser despres de la hora final.");
+        }
         if (dateOverlaps(idTreballador, dataServei, horaInici, horaFinal)) {
             return new PostResponse(0, "No s'ha pogut modificar el servei. El treballador ja te un servei assignat duarant aquest horari.");
         }
@@ -1107,14 +1115,34 @@ public class GestorPersistencia {
     }
 
     /**
-     * Comprova si el servei que es vol assignar a un treballador coincideix en horari
-     * amb algún dels serveis que ja tenia assignat.
-     * 
+     *
+     */
+    private boolean validTime(String dataServei, String horaInici, String horaFinal) {
+        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm");        
+        try {
+            Date dataInici = parser.parse(dataServei + " " + horaInici);
+            Date dataFinal = parser.parse(dataServei + " " + horaFinal);
+            if (dataFinal.before(dataInici)){
+                return false;
+            } else {
+                return true;
+            }
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+            return false;
+        }        
+    }
+
+    /**
+     * Comprova si el servei que es vol assignar a un treballador coincideix en
+     * horari amb algún dels serveis que ja tenia assignat.
+     *
      * @param idTreballador id del treballador
      * @param dataServei data del servei que es vol assignar
      * @param horaInici hora d'inici del servei que es vol assignar
      * @param horaFinal hora final del servei que es vol assignar
-     * @return true si l'horari coincideix amb algún d'un altre servei ja assignat
+     * @return true si l'horari coincideix amb algún d'un altre servei ja
+     * assignat
      */
     private boolean dateOverlaps(String idTreballador, String dataServei, String horaInici, String horaFinal) {
         SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -1145,17 +1173,19 @@ public class GestorPersistencia {
     }
 
     /**
-     * Comprova si el servei que es vol assignar a un treballador coincideix en horari
-     * amb algún dels serveis que ja tenia assignat.
-     * 
+     * Comprova si el servei que es vol assignar a un treballador coincideix en
+     * horari amb algún dels serveis que ja tenia assignat.
+     *
      * @param idServei id del servei que es vol assignar
-     * @param idTreballador id del treballador al que se li vol assignar el servei
-     * @return true si l'horari coincideix amb algún d'un altre servei ja assignat 
+     * @param idTreballador id del treballador al que se li vol assignar el
+     * servei
+     * @return true si l'horari coincideix amb algún d'un altre servei ja
+     * assignat
      */
     private boolean dateOverlaps(String idServei, String idTreballador) {
         int intIdServei = stringToInt(idServei);
         SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Date dataInici;  
+        Date dataInici;
         Date dataFinal;
         List<Servei> serveisTreballador = this.getServeisTreballador(stringToInt(idTreballador));
         Servei serveiActual = null;
@@ -1169,7 +1199,7 @@ public class GestorPersistencia {
             Date dataActualInici = parser.parse(serveiActual.getData_servei() + " " + serveiActual.getHora_inici());
             Date dataActualFinal = parser.parse(serveiActual.getData_servei() + " " + serveiActual.getHora_final());
             //Es comprova si els horaris es sobreposen amb algun dels serveis que el treballador ja te assignats
-            for (Servei servei : serveisTreballador) {                
+            for (Servei servei : serveisTreballador) {
                 if (servei.getId() != intIdServei) {
                     dataInici = parser.parse(servei.getData_servei() + " " + servei.getHora_inici());
                     dataFinal = parser.parse(servei.getData_servei() + " " + servei.getHora_final());

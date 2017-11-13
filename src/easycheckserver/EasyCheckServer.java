@@ -148,7 +148,7 @@ public class EasyCheckServer {
         String requestMethod = t.getRequestMethod();
         URI uri = t.getRequestURI();
         if (requestMethod.equals("GET")) {
-            System.out.println("HTTP GET REQUEST: " + uri);
+            System.out.println("HTTP GET REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             Map<String, String> query = queryToMap(uri.getQuery());
             if (!query.isEmpty()) {
                 if (query.containsKey("qrcode")) {
@@ -190,7 +190,7 @@ public class EasyCheckServer {
         URI uri = t.getRequestURI();
         Map<String, String> query = queryToMap(uri.getQuery());
         if (requestMethod.equals("GET")) {
-            System.out.println("HTTP GET REQUEST: " + uri);
+            System.out.println("HTTP GET REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             if (!query.isEmpty()) {
                 if (query.containsKey("treballador") && query.containsKey("data") && query.containsKey("hora")) {
                     response = parser.getServeisTreballadorDataHora(query.get("treballador"), query.get("data"), query.get("hora"));
@@ -208,7 +208,7 @@ public class EasyCheckServer {
             }
         } else if (requestMethod.equals("POST")) {
             query = getPostQuery(t);
-            System.out.println("HTTP POST REQUEST: " + uri);
+            System.out.println("HTTP POST REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             System.out.println("POST Query: " + query);
             if (query.containsKey("id") && query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
                 response = parser.actualitzarServei(query.get("id"), query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
@@ -245,7 +245,7 @@ public class EasyCheckServer {
         URI uri = t.getRequestURI();
         Map<String, String> query = queryToMap(uri.getQuery());
         if (requestMethod.equals("GET")) {
-            System.out.println("HTTP GET REQUEST: " + uri);
+            System.out.println("HTTP GET REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             if (query.containsKey("id")) {
                 String id = query.get("id");
                 response = parser.getTreballadorId(query.get("id"));
@@ -253,7 +253,7 @@ public class EasyCheckServer {
                 response = parser.getTreballadors();
             }
         } else if (requestMethod.equals("POST")) {
-            System.out.println("HTTP POST REQUEST: " + uri);
+            System.out.println("HTTP POST REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("borrarid")) {
@@ -287,7 +287,7 @@ public class EasyCheckServer {
         String response = "";
         String requestMethod = t.getRequestMethod();
         if (requestMethod.equals("POST")) {
-            System.out.println("HTTP POST REQUEST: " + t.getRequestURI());
+            System.out.println("HTTP POST REQUEST: " + t.getRequestURI() + " FROM " + t.getRemoteAddress());
             Map<String, String> query = getPostQuery(t);
             System.out.println("POST Query: " + query);
             if (query.containsKey("user") && query.containsKey("pass")) {
