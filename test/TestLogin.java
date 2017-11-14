@@ -18,7 +18,7 @@ import org.junit.Test;
  * Per tal d'executar amb èxit aquestos tests cal engegar l'aplicació servidor
  * EasyCheckServer a la màquina local (localhost) amb el port 8080, i a més cal 
  * executar l'script easycheck.sql per tal de esborrar totes les dades i crear
- * tan sols un el usuari Administrador.
+ * un el usuari Administrador.
  * 
  * @author Toni
  */

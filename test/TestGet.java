@@ -25,23 +25,15 @@ import org.junit.Test;
  * 
  * Per tal d'executar amb èxit aquestos tests cal engegar l'aplicació servidor
  * EasyCheckServer a la màquina local (localhost) amb el port 8080, i a més cal 
- * inseerir les dades d'exemple proporcionades amb l'script easycheck_examples.sql, 
- * o almenys les següents:
+ * inseerir les dades d'exemple proporcionades amb l'script easycheck_examples.sql.
  * 
- * INSERT INTO treballador (nom, cognom1, cognom2, dni, esAdmin, login, password ) VALUES ('Antoni', 'Torres','Mari','44444444k','1','toni','xxx');
- * INSERT INTO treballador (nom, cognom1, cognom2, dni, esAdmin, login, password ) VALUES ('Maria','Ortega','Cobo','55555555k','1','mari','xxx');
- * INSERT INTO treballador (nom, cognom1, cognom2, dni, esAdmin, login, password ) VALUES ('Carlos Alberto','Castro','Cañabate','66666666k','1','carlos','xxx');
- * INSERT INTO serveis (descripcio, id_treballador, data_servei, hora_inici, hora_final) VALUES ('Tarragona - Reus', 4, '29/10/2017','10:00','11:00');
- * INSERT INTO client (nom_titular, cognom1_titular, cognom2_titular, telefon_titular, email_titular, dni_titular) VALUES ('Maria', 'Ortega', 'Cobos', '12345678', 'maria@gmail.com','41471860P');
- * INSERT INTO reserva (id_servei, id_client, localitzador,  data_reserva, qr_code, checkin) VALUES (1, 1, '123456', '16/1/2017', '45R545WE45', '0');
- *  
  */
 public class TestGet extends TestCase {
     
     private static final String BASE_URL = "localhost";
     private static final int PORT = 8080;
     private static final String NOM = "Administrador";
-    private static final String DESCRIPCIO = "Tarragona - Reus";
+    private static final String DESCRIPCIO = "Mallorca - Menorca";
     private static final String QR_CODE = "45R545WE45";
     private Gson gson = new Gson();
     
@@ -100,7 +92,7 @@ public class TestGet extends TestCase {
      */
     @Test
     public void testGetServeisTreballadorData(){
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4&data=29/10/2017");
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4&data=19/12/2017");
         System.out.println(url);
         String json = doGetRequest(url);
         final Type tipusLlista = new TypeToken<List<Servei>>(){}.getType();
@@ -114,7 +106,7 @@ public class TestGet extends TestCase {
      */
     @Test
     public void testGetServeisTreballadorDataHora(){
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4&data=29/10/2017&hora=10:00");
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "treballador=4&data=19/12/2017&hora=10:23");
         System.out.println(url);
         String json = doGetRequest(url);
         final Type tipusLlista = new TypeToken<List<Servei>>(){}.getType();
@@ -127,7 +119,7 @@ public class TestGet extends TestCase {
      */
     @Test
     public void testGetServeisData(){
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "data=29/10/2017");
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "data=19/12/2017");
         System.out.println(url);
         String json = doGetRequest(url);
         final Type tipusLlista = new TypeToken<List<Servei>>(){}.getType();
@@ -140,7 +132,7 @@ public class TestGet extends TestCase {
      */
     @Test
     public void testGetServeisDataHora(){
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "data=29/10/2017&hora=10:00");
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", "data=19/12/2017&hora=10:23");
         System.out.println(url);
         String json = doGetRequest(url);
         final Type tipusLlista = new TypeToken<List<Servei>>(){}.getType();
@@ -192,7 +184,7 @@ public class TestGet extends TestCase {
      */
     @Test
     public void testGetReservesData(){
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "data=29/10/2017");
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "data=19/12/2017");
         System.out.println(url);
         String json = doGetRequest(url);
         final Type tipusLlista = new TypeToken<List<Reserva>>(){}.getType();
@@ -218,7 +210,7 @@ public class TestGet extends TestCase {
      */
     @Test
     public void testGetReservesDataHora(){
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "data=29/10/2017&hora=10:00");
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", "data=19/12/2017&hora=10:23");
         System.out.println(url);
         String json = doGetRequest(url);
         final Type tipusLlista = new TypeToken<List<Reserva>>(){}.getType();
