@@ -12,6 +12,8 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import static easycheckserver.utils.NetUtils.queryToMap;
 import easycheckserver.utils.JSonParser;
+import static easycheckserver.utils.NetUtils.printSignature;
+import static easycheckserver.utils.NetUtils.stringToInt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,28 +26,32 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Toni
- * 
- * 
- */
+/*      
+ _______                     ______ __                __      _______                              
+|    ___|.---.-.-----.--.--.|      |  |--.-----.----.|  |--. |     __|.-----.----.--.--.-----.----.
+|    ___||  _  |__ --|  |  ||   ---|     |  -__|  __||    <  |__     ||  -__|   _|  |  |  -__|   _|
+|_______||___._|_____|___  ||______|__|__|_____|____||__|__| |_______||_____|__|  \___/|_____|__|                      |_____|                                                                       
+
+@Author: Toni
+*/
 public class EasyCheckServer {
 
     private static JSonParser parser;
+    private final static int DEFAULT_PORT = 8080;
 
     private EasyCheckServer() {
     }
 
     /**
      * Posada en marxa del servidor http
+     *
      * @param args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        int port = serverArgs(args);
         parser = new JSonParser();
-
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/easycheckapi/reserva", new ReservesHandler());
         server.createContext("/easycheckapi/servei", new ServeisHandler());
         server.createContext("/easycheckapi/treballador", new TreballadorsHandler());
@@ -55,9 +61,41 @@ public class EasyCheckServer {
     }
 
     /**
-     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
-     * una petició http al directori reserva.
+     * Accepta els arguments -h --help mostrant un petit comentari d'ajuta.
+     * I els arguments -p --port engegant el servei amb el port indicat
      * 
+     * @param args arguments
+     * @return port indicat si és correcte
+     */
+    private static int serverArgs(String[] args) {
+        printSignature();
+        if (args.length == 0) {
+            System.out.println("Runing EasyCheck Server listening on default Port 8080...");
+            return DEFAULT_PORT;
+        } else if (args.length > 2) {
+            System.out.println("Argument invàlid " + args[0]);
+        } else if (args[0].equals("-h") || args[0].equals("--help") || args[0].equals("?")) {
+            System.out.println("\n EasyCheckServer [OPTIONS] \n");
+            System.out.println("-p \t --port \t Port the server will listen to.\n");
+        } else if (args[0].equals("-p") || args[0].equals("--port")) {
+            int port = stringToInt(args[1]);
+            if (port != 0) {
+                System.out.println("Runing EasyCheck Server listening on Port " + port + "...");
+                return port;
+            } else {
+                System.out.println("Argument invàlid " + args[1]);
+            }
+        } else {
+            System.out.println("Argument invàlid " + args[0]);
+        }
+        System.exit(0);
+        return -1;
+    }
+
+    /**
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi una
+     * petició http al directori reserva.
+     *
      * Obté la resposta a la petició del mètode handleReservesRequest, formata
      * el header i envía la resposta.
      */
@@ -75,11 +113,11 @@ public class EasyCheckServer {
     }
 
     /**
-     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
-     * una petició http al directori servei.
-     * 
-     * Obté la resposta a la petició del mètode handleServeisRequest, formata
-     * el header i envía la resposta.
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi una
+     * petició http al directori servei.
+     *
+     * Obté la resposta a la petició del mètode handleServeisRequest, formata el
+     * header i envía la resposta.
      */
     static class ServeisHandler implements HttpHandler {
 
@@ -95,11 +133,11 @@ public class EasyCheckServer {
     }
 
     /**
-     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
-     * una petició http al directori treballador.
-     * 
-     * Obté la resposta a la petició del mètode handleTreballadorRequest, formata
-     * el header i envía la resposta.
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi una
+     * petició http al directori treballador.
+     *
+     * Obté la resposta a la petició del mètode handleTreballadorRequest,
+     * formata el header i envía la resposta.
      */
     static class TreballadorsHandler implements HttpHandler {
 
@@ -115,11 +153,11 @@ public class EasyCheckServer {
     }
 
     /**
-     * Una nova instància d'aquesta classe serà creada cada cop que es rebi
-     * una petició http al directori login.
-     * 
-     * Obté la resposta a la petició del mètode handleLoginRequest, formata
-     * el header i envía la resposta.
+     * Una nova instància d'aquesta classe serà creada cada cop que es rebi una
+     * petició http al directori login.
+     *
+     * Obté la resposta a la petició del mètode handleLoginRequest, formata el
+     * header i envía la resposta.
      */
     static class LoginHandler implements HttpHandler {
 
@@ -135,11 +173,11 @@ public class EasyCheckServer {
     }
 
     /**
-     * Aquest mètode tan sols gestiona peticions http amb mètode GET:
-     * Extreu el query de l'URI i en funció dels paràmetres d'aquest query
-     * truca un mètode de la classe JsonParser del que obtindrà el resultat
-     * de la consulta en formàt Json
-     * 
+     * Aquest mètode tan sols gestiona peticions http amb mètode GET: Extreu el
+     * query de l'URI i en funció dels paràmetres d'aquest query truca un mètode
+     * de la classe JsonParser del que obtindrà el resultat de la consulta en
+     * formàt Json
+     *
      * @param t objecte HttpExange
      * @return cadena de caràcters amb la resposta en format json
      */
@@ -170,17 +208,17 @@ public class EasyCheckServer {
         }
         return response;
     }
-    
+
     /**
-     * Aquest mètode gestiona peticions http amb mètode GET o POST:
-     * Si és GET extreu el query de l'URI i en funció dels paràmetres d'aquest query
-     * truca un mètode de la classe JsonParser del que obtindrà el resultat
-     * de la consulta en formàt Json
-     * 
-     * Si és POST extreu el query del cos de la petició mitjançant el mètode getPostQuery,
-     * truca el mètode de la classe JsonParser corresponent i retorna el resultat
-     * en formàt Json.
-     * 
+     * Aquest mètode gestiona peticions http amb mètode GET o POST: Si és GET
+     * extreu el query de l'URI i en funció dels paràmetres d'aquest query truca
+     * un mètode de la classe JsonParser del que obtindrà el resultat de la
+     * consulta en formàt Json
+     *
+     * Si és POST extreu el query del cos de la petició mitjançant el mètode
+     * getPostQuery, truca el mètode de la classe JsonParser corresponent i
+     * retorna el resultat en formàt Json.
+     *
      * @param t objecte HttpExange
      * @return cadena de caràcters amb la resposta en format json
      */
@@ -227,15 +265,15 @@ public class EasyCheckServer {
     }
 
     /**
-     * Aquest mètode gestiona peticions http amb mètode GET o POST:
-     * Si és GET extreu el query de l'URI i en funció dels paràmetres d'aquest query
-     * truca un mètode de la classe JsonParser del que obtindrà el resultat
-     * de la consulta en formàt Json
-     * 
-     * Si és POST extreu el query del cos de la petició mitjançant el mètode getPostQuery,
-     * truca el mètode de la classe JsonParser corresponent i retorna el resultat
-     * en formàt Json.
-     * 
+     * Aquest mètode gestiona peticions http amb mètode GET o POST: Si és GET
+     * extreu el query de l'URI i en funció dels paràmetres d'aquest query truca
+     * un mètode de la classe JsonParser del que obtindrà el resultat de la
+     * consulta en formàt Json
+     *
+     * Si és POST extreu el query del cos de la petició mitjançant el mètode
+     * getPostQuery, truca el mètode de la classe JsonParser corresponent i
+     * retorna el resultat en formàt Json.
+     *
      * @param t objecte HttpExange
      * @return cadena de caràcters amb la resposta en format json
      */
@@ -275,11 +313,11 @@ public class EasyCheckServer {
     }
 
     /**
-     * Aquest mètode gestiona peticions http amb mètode POST:
-     * Extreu el query del cos de la petició mitjançant el mètode getPostQuery,
-     * truca el mètode de la classe JsonParser corresponent i retorna el resultat
-     * en formàt Json.
-     * 
+     * Aquest mètode gestiona peticions http amb mètode POST: Extreu el query
+     * del cos de la petició mitjançant el mètode getPostQuery, truca el mètode
+     * de la classe JsonParser corresponent i retorna el resultat en formàt
+     * Json.
+     *
      * @param t objecte HttpExange
      * @return cadena de caràcters amb la resposta en format json
      */
@@ -300,7 +338,7 @@ public class EasyCheckServer {
     /**
      * Obté el query del body de la petició post i la retorna com un objecte
      * Map<String, String>
-     * 
+     *
      * @param t objecte HttpExange
      * @return objecte Map<String, String>
      */

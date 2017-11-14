@@ -155,6 +155,16 @@ public class NetUtils {
             return 0;
         }
     }
-   
-
+    
+    /**
+     * Imprimeix per consola el títol de l'aplicació servei
+     */
+    public static void printSignature(){        
+        System.out.println();
+        System.out.println(" ___  __    ____   __ ____  _ ___ ____  __   __  ___ ___  _   _  ___ ___ ");
+        System.out.println("| __|/  \\ /' _| `v' // _/ || | __/ _/ |/ / /' _/| __| _ \\| \\ / || __| _ \\");
+        System.out.println("| _|| /\\ |`._`.`. .'| \\_| >< | _| \\_|   <  `._`.| _|| v /`\\ V /'| _|| v /");
+        System.out.println("|___|_||_||___/ !_!  \\__/_||_|___\\__/_|\\_\\ |___/|___|_|_\\  \\_/  |___|_|_\\");
+        System.out.println();
+    } 
 }
