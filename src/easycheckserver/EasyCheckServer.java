@@ -185,9 +185,9 @@ public class EasyCheckServer {
         String response = "";
         String requestMethod = t.getRequestMethod();
         URI uri = t.getRequestURI();
+        Map<String, String> query = queryToMap(uri.getQuery());
         if (requestMethod.equals("GET")) {
-            System.out.println("HTTP GET REQUEST: " + uri + " FROM " + t.getRemoteAddress());
-            Map<String, String> query = queryToMap(uri.getQuery());
+            System.out.println("HTTP GET REQUEST: " + uri + " FROM " + t.getRemoteAddress());            
             if (!query.isEmpty()) {
                 if (query.containsKey("qrcode")) {
                     response = parser.getReservesQRCode(query.get("qrcode"));
@@ -204,6 +204,18 @@ public class EasyCheckServer {
                 }
             } else {
                 response = parser.getReserves();
+            }
+        } else if (requestMethod.equals("POST")) {
+            query = getPostQuery(t);
+            System.out.println("HTTP POST REQUEST: " + uri + " FROM " + t.getRemoteAddress());
+            System.out.println("POST Query: " + query);
+            if (query.containsKey("checkin")) {
+                response = parser.checkIn(query.get("checkin"));
+            } else {
+                response = "{\n"
+                        + "  \"requestCode\": 0,\n"
+                        + "  \"message\": \"Query invalid.\"\n"
+                        + "}";
             }
         }
         return response;

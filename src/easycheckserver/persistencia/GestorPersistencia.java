@@ -1113,6 +1113,33 @@ public class GestorPersistencia {
         }
         return response;
     }
+    
+    
+    public PostResponse checkIn(String idReserva) {
+        PostResponse response = new PostResponse(0, "No s'ha pogut realitzar el Check-In");
+        Statement stm = null;
+        String updateSQL = "UPDATE " + TaulaReserva.NOM_TAULA + " SET "
+                + TaulaReserva.CHECKIN + "= 1" 
+                + " WHERE " + TaulaReserva.ID + "=" + idReserva;
+        try {
+            stm = conn.createStatement();
+            int rowsUpdated = stm.executeUpdate(updateSQL);
+            if (rowsUpdated == 1) {
+                response.setRequestCode(1);
+                response.setMessage("Check-in realitzat correctament.");
+            } else {
+                response.setRequestCode(0);
+                response.setMessage("No s'ha pogut realitzar el Check-In.");
+            }
+        } catch (SQLException ex) {
+            response.setRequestCode(0);
+            response.setMessage("No s'ha pogut realitzar el Check-In.");
+        } finally {
+            closeStatement(stm);
+        }
+        return response;
+    }
+    
 
     /**
      * Comprova que l'hora d'inici del servei no sigui posterior a l'hora de

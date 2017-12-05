@@ -343,4 +343,12 @@ public class JSonParser {
         return gson.toJson(response);
     }
     
+    
+     public String checkIn(String idReserva) {
+        gestor.open();
+        PostResponse response = gestor.checkIn(idReserva);
+        gestor.close();
+        return gson.toJson(response);
+    }
+    
 }
