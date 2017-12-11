@@ -1221,6 +1221,10 @@ public class GestorPersistencia {
         Date dataInici;
         Date dataFinal;
         List<Servei> serveisTreballador = this.getServeisTreballador(stringToInt(idTreballador));
+        //Si el treballador no te serveis no cal comprovar res mes
+        if (serveisTreballador == null) {
+            return false;
+        }
         Servei serveiActual = null;
         for (Servei servei : serveisTreballador) {
             if (servei.getId() == intIdServei) {

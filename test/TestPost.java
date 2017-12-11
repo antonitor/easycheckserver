@@ -166,6 +166,16 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(), 0);
     }
    
+   //TEST EN CONSTRUCCIÓN 
+    @Test
+    public void testAssignarTreballador(){
+        String query = this.buildQueryAssignarTreballador(2, 3);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador/", null);
+        String json = doPostRequest(url, query);
+        PostResponse response = gson.fromJson(json, PostResponse.class);
+        assertEquals(response.getRequestCode(), 1);
+    }
+      
     /**
      * Inserció de treballador per les proves
      * @return objecte PostResponse
@@ -187,6 +197,7 @@ public class TestPost extends TestCase {
         String json = doPostRequest(url, query);
         return gson.fromJson(json, PostResponse.class);    
     }
+    
     
     /**
      * Genera un String aleatori de 9 caràcters
