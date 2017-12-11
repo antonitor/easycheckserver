@@ -844,9 +844,9 @@ public class GestorPersistencia {
         if (idTreballador.equals("1")) {
             return new PostResponse(0, "No es poden assignar Serveis al usuari Administrador");
         }
-        if (dateOverlaps(idServei, idTreballador)) {
+        /*if (dateOverlaps(idServei, idTreballador)) {
             return new PostResponse(0, "Error al assignar treballador: ja te un altre servei assignat durant aquest horari.");
-        }
+        }*/
         PostResponse response = new PostResponse();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
