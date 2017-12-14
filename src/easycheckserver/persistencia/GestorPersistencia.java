@@ -1116,7 +1116,16 @@ public class GestorPersistencia {
     
     
     public PostResponse checkIn(String idReserva) {
-        PostResponse response = new PostResponse(0, "No s'ha pogut realitzar el Check-In");
+        PostResponse response = new PostResponse();
+        for (Reserva reserva : this.getReserves()) {
+            if (idReserva.equals(reserva.getId() + "")){
+                if (reserva.getCheckin() == 1) {
+                    response.setRequestCode(0);
+                    response.setMessage("Aquesta reserva ja te check-in!");
+                    return response;
+                }
+            }
+        }
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaReserva.NOM_TAULA + " SET "
                 + TaulaReserva.CHECKIN + "= 1" 

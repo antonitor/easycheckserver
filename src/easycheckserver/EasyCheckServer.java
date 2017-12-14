@@ -321,6 +321,7 @@ public class EasyCheckServer {
                         + "}";
             }
         }
+        System.out.println("TEST RESPONSE -> " + response);
         return response;
     }
 

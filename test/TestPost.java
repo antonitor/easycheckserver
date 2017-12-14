@@ -142,8 +142,8 @@ public class TestPost extends TestCase {
     @Test
     public void testActualitzarServei() {        
         String descripcioAleatoria = randomString();
-        inserirServei(descripcioAleatoria, "6/10/2018", "10:30", "11:30", ID_ADMINISTRADOR);        
-        String query = buildQueryActualitzarServei(getIdServeiDesc(descripcioAleatoria), "Test", "6/10/2018", "10:30", "11:30", ID_ADMINISTRADOR);
+        inserirServei(descripcioAleatoria, "6/10/2018", "10:30", "11:30", 3);        
+        String query = buildQueryActualitzarServei(getIdServeiDesc(descripcioAleatoria), "Test", "6/10/2018", "10:30", "11:30", 3);
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
         String json = doPostRequest(url, query);
         PostResponse response = gson.fromJson(json, PostResponse.class);
@@ -166,11 +166,38 @@ public class TestPost extends TestCase {
         assertEquals(response.getRequestCode(), 0);
     }
    
-   //TEST EN CONSTRUCCIÓN 
+   /**
+     * Prova d'assignar un servei a un treballador.
+     */ 
+    @Test
+    public void testAssignarTreballadorAdmin(){
+        String query = this.buildQueryAssignarTreballador(1, ID_ADMINISTRADOR);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
+        String json = doPostRequest(url, query);
+        PostResponse response = gson.fromJson(json, PostResponse.class);
+        assertEquals(response.getRequestCode(), 0);
+    }
+    
+    
+    /**
+     * Prova d'assignar un servei a un treballador.
+     */ 
     @Test
     public void testAssignarTreballador(){
-        String query = this.buildQueryAssignarTreballador(2, 3);
-        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador/", null);
+        String query = this.buildQueryAssignarTreballador(1, 2);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/treballador", null);
+        String json = doPostRequest(url, query);
+        PostResponse response = gson.fromJson(json, PostResponse.class);
+        assertEquals(response.getRequestCode(), 1);
+    }
+    
+     /**
+     * Prova de fer el check-in d'una reserva
+     */ 
+    @Test
+    public void testCheckIn(){
+        String query = this.buildQueryCheckInint(2);
+        URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/reserva", null);
         String json = doPostRequest(url, query);
         PostResponse response = gson.fromJson(json, PostResponse.class);
         assertEquals(response.getRequestCode(), 1);
@@ -280,6 +307,14 @@ public class TestPost extends TestCase {
         URL url = buildUrl(BASE_URL, PORT, "/easycheckapi/servei", null);
         String json = doPostRequest(url, query);
         return gson.fromJson(json, PostResponse.class);
+    }
+    
+    
+    /**
+     * Genera el query per fer check-in a una reserva
+     */
+    public String buildQueryCheckInint (int idReserva) {
+        return "checkin=" + idReserva;
     }
     
     /**
