@@ -191,16 +191,22 @@ public class EasyCheckServer {
             if (!query.isEmpty()) {
                 if (query.containsKey("qrcode")) {
                     response = parser.getReservesQRCode(query.get("qrcode"));
+                    System.out.println("GET reserves amb QRCode " + query.get("qrcode"));
                 } else if (query.containsKey("loc")) {
                     response = parser.getReservesLoc(query.get("loc"));
+                    System.out.println("GET reserves amb Localitzador " + query.get("loc"));
                 } else if (query.containsKey("dni") && query.containsKey("data")) {
                     response = parser.getReservesDniData(query.get("dni"), query.get("data"));
+                    System.out.println("GET reserves amb dni " + query.get("dni") + " i data " + query.get("data"));
                 } else if (query.containsKey("dni")) {
                     response = parser.getReservesDni(query.get("dni"));
+                    System.out.println("GET reserves amb dni " + query.get("dni"));
                 } else if (query.containsKey("data")) {
                     response = parser.getReservesData(query.get("data"));
+                    System.out.println("GET reserves amb data " + query.get("data"));
                 } else if (query.containsKey("servei")) {
                     response = parser.getReservesServei(query.get("servei"));
+                    System.out.println("GET reserves del servei " + query.get("servei"));
                 }
             } else {
                 response = parser.getReserves();
@@ -208,9 +214,9 @@ public class EasyCheckServer {
         } else if (requestMethod.equals("POST")) {
             query = getPostQuery(t);
             System.out.println("HTTP POST REQUEST: " + uri + " FROM " + t.getRemoteAddress());
-            System.out.println("POST Query: " + query);
             if (query.containsKey("checkin")) {
-                response = parser.checkIn(query.get("checkin"));
+                System.out.println("Check-In de la reserva " + query.get("checkin"));
+                response = parser.checkIn(query.get("checkin"));                
             } else {
                 response = "{\n"
                         + "  \"requestCode\": 0,\n"
@@ -244,27 +250,35 @@ public class EasyCheckServer {
             if (!query.isEmpty()) {
                 if (query.containsKey("treballador") && query.containsKey("data") && query.containsKey("hora")) {
                     response = parser.getServeisTreballadorDataHora(query.get("treballador"), query.get("data"), query.get("hora"));
+                    System.out.println("GET serveis del treballador: " + query.get("treballador") + ", data: " + query.get("data") + ", hora: " + query.get("hora"));
                 } else if (query.containsKey("treballador") && query.containsKey("data")) {
                     response = parser.getServeisTreballadorData(query.get("treballador"), query.get("data"));
+                    System.out.println("GET serveis del treballador: " + query.get("treballador") + ", data: " + query.get("data"));
                 } else if (query.containsKey("treballador")) {
                     response = parser.getServeisTreballador(query.get("treballador"));
+                    System.out.println("GET serveis del treballador: " + query.get("treballador"));
                 } else if (query.containsKey("data") && query.containsKey("hora")) {
                     response = parser.getServeisDataHora(query.get("data"), query.get("hora"));
+                    System.out.println("GET serveis amb data " + query.get("data") + " i hora " + query.get("hora"));
                 } else if (query.containsKey("data")) {
                     response = parser.getServeisData(query.get("data"));
+                    System.out.println("GET serveis amb data " + query.get("data"));
                 }
             } else {
                 response = parser.getServeis();
+                System.out.println("GET tots els serveis");
             }
         } else if (requestMethod.equals("POST")) {
             query = getPostQuery(t);
             System.out.println("HTTP POST REQUEST: " + uri + " FROM " + t.getRemoteAddress());
-            System.out.println("POST Query: " + query);
             if (query.containsKey("id") && query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
+                System.out.println("Actualitzar servei: " + query.get("descripcio"));
                 response = parser.actualitzarServei(query.get("id"), query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
             } else if (query.containsKey("descripcio") && query.containsKey("dataservei") && query.containsKey("horainici") && query.containsKey("horafinal") && query.containsKey("idtreballador")) {
+                System.out.println("Inserir servei: " + query.get("descripcio"));
                 response = parser.inserirServei(query.get("descripcio"), query.get("dataservei"), query.get("horainici"), query.get("horafinal"), query.get("idtreballador"));
             } else if (query.containsKey("borrarid")) {
+                System.out.println("Esborrar servei: " + query.get("borrarid"));
                 response = parser.esborrarServei(query.get("borrarid"));
             } else {
                 response = "{\n"
@@ -297,22 +311,26 @@ public class EasyCheckServer {
         if (requestMethod.equals("GET")) {
             System.out.println("HTTP GET REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             if (query.containsKey("id")) {
-                String id = query.get("id");
                 response = parser.getTreballadorId(query.get("id"));
+                System.out.println("GET trebalador: " + query.get("id"));
             } else {
                 response = parser.getTreballadors();
+                System.out.println("GET tots els treballadors.");
             }
         } else if (requestMethod.equals("POST")) {
             System.out.println("HTTP POST REQUEST: " + uri + " FROM " + t.getRemoteAddress());
             query = getPostQuery(t);
-            System.out.println("POST Query: " + query);
             if (query.containsKey("borrarid")) {
+                System.out.println("Borrar treballador: " + query.get("borrarid"));
                 response = parser.esborrarTreballador(query.get("borrarid"));
             } else if (query.containsKey("id") && query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
+                System.out.println("Actualitzar trebalador: " + query.get("nom") + " " + query.get("cognom1"));
                 response = parser.actualitzarTreballador(query.get("id"), query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"), query.get("password"));
             } else if (query.containsKey("nom") && query.containsKey("cognom1") && query.containsKey("cognom2") && query.containsKey("dni") && query.containsKey("esadmin") && query.containsKey("login") && query.containsKey("password")) {
+                System.out.println("Inserir trebalador: " + query.get("nom") + " " + query.get("cognom1"));
                 response = parser.inserirTreballador(query.get("nom"), query.get("cognom1"), query.get("cognom2"), query.get("dni"), query.get("esadmin"), query.get("login"), query.get("password"));
             } else if (query.containsKey("idservei") && query.containsKey("idtreballador")) {
+                System.out.println("Assignar treballador " + query.get("idtreballador") + " al servei " + query.get("idservei"));
                 response = parser.assignarTreballador(query.get("idservei"), query.get("idtreballador"));
             } else {
                 response = "{\n"
@@ -321,7 +339,6 @@ public class EasyCheckServer {
                         + "}";
             }
         }
-        System.out.println("TEST RESPONSE -> " + response);
         return response;
     }
 
@@ -340,8 +357,8 @@ public class EasyCheckServer {
         if (requestMethod.equals("POST")) {
             System.out.println("HTTP POST REQUEST: " + t.getRequestURI() + " FROM " + t.getRemoteAddress());
             Map<String, String> query = getPostQuery(t);
-            System.out.println("POST Query: " + query);
             if (query.containsKey("user") && query.containsKey("pass")) {
+                System.out.println("Login: " + query.get("user"));
                 response = parser.Login(query.get("user"), query.get("pass"));
             }
         }

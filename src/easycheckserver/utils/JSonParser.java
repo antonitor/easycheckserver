@@ -343,7 +343,13 @@ public class JSonParser {
         return gson.toJson(response);
     }
     
-    
+    /**
+     * Obre connexió amb la base de dades, truca el mètode per fer el check-in 
+     * d'una reserva, n'obté el resultat en forma d'objecte PostResponse,
+     * tanca la connexió i retorna les dades en forma de Json
+     *
+     * @return dades formatades en forma de Json
+     */
      public String checkIn(String idReserva) {
         gestor.open();
         PostResponse response = gestor.checkIn(idReserva);

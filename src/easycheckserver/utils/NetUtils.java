@@ -88,7 +88,6 @@ public class NetUtils {
                 responseBody = scanner.useDelimiter("\\A").next();
             }
 
-            System.out.println(responseBody);
             return responseBody;
 
         } catch (IOException ex) {
@@ -136,7 +135,6 @@ public class NetUtils {
                     result.put(pair[0], "");
                 }
             }
-            System.out.println(result.toString());
         }
         return result;
     }

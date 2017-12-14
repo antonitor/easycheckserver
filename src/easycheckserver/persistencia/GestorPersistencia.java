@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Aquesta classe gestiona les crides a la base de dades per tal d'obtenir
@@ -748,7 +746,6 @@ public class GestorPersistencia {
                 response.setMessage("No s'ha pogut inserir el treballador " + nom);
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
                 if (ex.getMessage().contains("login")) {
@@ -764,6 +761,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -786,6 +784,7 @@ public class GestorPersistencia {
      */
     public PostResponse updateTreballador(String id, String nom, String cognom1, String cognom2, String dni, String admin, String login, String pass) {
         if (id.equals("1")) {
+            System.out.println("No es pot modificar el usuari Administrador");
             return new PostResponse(0, "No es pot modificar el usuari Administrador");
         }
         PostResponse response = new PostResponse();
@@ -810,7 +809,6 @@ public class GestorPersistencia {
                 response.setMessage("No sha pogut actualitzar el treballador.");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
                 if (ex.getMessage().contains("login")) {
@@ -826,6 +824,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -842,11 +841,13 @@ public class GestorPersistencia {
      */
     public PostResponse assignarTreballador(String idServei, String idTreballador) {
         if (idTreballador.equals("1")) {
+            System.out.println("No es poden assignar Serveis al usuari Administrador");
             return new PostResponse(0, "No es poden assignar Serveis al usuari Administrador");
         }
-        /*if (dateOverlaps(idServei, idTreballador)) {
+        if (dateOverlaps(idServei, idTreballador)) {
+            System.out.println("Error al assignar treballador: ja te un altre servei assignat durant aquest horari.");
             return new PostResponse(0, "Error al assignar treballador: ja te un altre servei assignat durant aquest horari.");
-        }*/
+        }
         PostResponse response = new PostResponse();
         Statement stm = null;
         String updateSQL = "UPDATE " + TaulaServeis.NOM_TAULA + " SET "
@@ -863,7 +864,6 @@ public class GestorPersistencia {
                 response.setMessage("No sha pogut assignar el treballador al servei.");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
                 response.setMessage("Error al assignar treballador: ja te un altre servei assignat el mateix dia i hora, i se l'hi ha concedit el do de la ubiqüitat.");
@@ -873,6 +873,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -890,6 +891,7 @@ public class GestorPersistencia {
         if (idTreballador.equals("1")) {
             response.setRequestCode(0);
             response.setMessage("No es pot esborrar el Administrador.");
+            System.out.println(response.getMessage());
             return response;
         }
         Statement stm = null;
@@ -906,7 +908,6 @@ public class GestorPersistencia {
                 response.setMessage("Aquest treballador no existeix.");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23503")) {
                 response.setMessage("No es pot esborrar aquest treballador, té serveis assignats.");
@@ -916,6 +917,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -938,9 +940,11 @@ public class GestorPersistencia {
      */
     public PostResponse insertServei(String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
         if (!validTime(dataServei, horaInici, horaFinal)){
+            System.out.println("La hora de inici no pot ser despres de la hora final.");
             return new PostResponse(0, "La hora de inici no pot ser despres de la hora final.");
         }
         if (dateOverlaps(idTreballador, dataServei, horaInici, horaFinal)) {
+            System.out.println("No s'ha pogut crear el servei: El treballador ja te un servei assignat durant aquest horari.");
             return new PostResponse(0, "No s'ha pogut crear el servei: El treballador ja te un servei assignat durant aquest horari.");
         }
         PostResponse response = new PostResponse();
@@ -964,7 +968,6 @@ public class GestorPersistencia {
                 response.setMessage("Error al crear nou Servei.");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23505")) {
                 response.setMessage("Error al crear servei: el treballador ja te un altre servei assignat el mateix dia i hora.");
@@ -974,6 +977,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -997,9 +1001,11 @@ public class GestorPersistencia {
      */
     public PostResponse updateServei(String id, String descripcio, String dataServei, String horaInici, String horaFinal, String idTreballador) {
         if (!validTime(dataServei, horaInici, horaFinal)){
+            System.out.println("La hora de inici no pot ser despres de la hora final.");
             return new PostResponse(0, "La hora de inici no pot ser despres de la hora final.");
         }
         if (dateOverlaps(idTreballador, dataServei, horaInici, horaFinal)) {
+            System.out.println("No s'ha pogut modificar el servei. El treballador ja te un servei assignat duarant aquest horari.");
             return new PostResponse(0, "No s'ha pogut modificar el servei. El treballador ja te un servei assignat duarant aquest horari.");
         }
         PostResponse response = new PostResponse();
@@ -1030,6 +1036,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -1058,7 +1065,6 @@ public class GestorPersistencia {
                 response.setMessage("Error al borrar el Servei.");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getErrorCode() + ": " + ex.getMessage());
             response.setRequestCode(0);
             if (ex.getSQLState().equals("23503")) {
                 response.setMessage("Error al esborrar Servei: te reserves asociades.");
@@ -1068,6 +1074,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
 
@@ -1111,10 +1118,18 @@ public class GestorPersistencia {
                 }
             }
         }
+        System.out.println(response.getMessage());
         return response;
     }
     
-    
+    /**
+     * Enregistra a la base de dades el check-in d'una reserva. Si la reserva
+     * ja té el check-in fet torna un objecte PostResponse amb codi 0 i el missatje
+     * explicatiu.
+     * 
+     * @param idReserva id de la reserva ala que se li vol fer check-in
+     * @return PostResponse
+     */
     public PostResponse checkIn(String idReserva) {
         PostResponse response = new PostResponse();
         for (Reserva reserva : this.getReserves()) {
@@ -1122,6 +1137,7 @@ public class GestorPersistencia {
                 if (reserva.getCheckin() == 1) {
                     response.setRequestCode(0);
                     response.setMessage("Aquesta reserva ja te check-in!");
+                    System.out.println(response.getMessage());
                     return response;
                 }
             }
@@ -1146,6 +1162,7 @@ public class GestorPersistencia {
         } finally {
             closeStatement(stm);
         }
+        System.out.println(response.getMessage());
         return response;
     }
     
@@ -1200,10 +1217,8 @@ public class GestorPersistencia {
                 dataInici = parser.parse(servei.getData_servei() + " " + servei.getHora_inici());
                 dataFinal = parser.parse(servei.getData_servei() + " " + servei.getHora_final());
                 if (dataInici.before(dataActualInici) && dataFinal.after(dataActualInici)) {
-                    System.out.println("dataActualInici after dataInici & before dataFinal");
                     return true; //Si la hora d'inici està entre l'hora d'inici i la final d'un servei ja assignat tornam true
                 } else if (dataInici.before(dataActualFinal) && dataFinal.after(dataActualFinal)) {
-                    System.out.println("dataActualFinal after dataInici & before dataFinal");
                     return true; //Si la hora d'inici està entre l'hora d'inici i la final d'un servei ja assignat tornam true
                 }
             }
@@ -1234,11 +1249,17 @@ public class GestorPersistencia {
         if (serveisTreballador == null) {
             return false;
         }
+        if (serveisTreballador.isEmpty()) {
+            return false;
+        }
         Servei serveiActual = null;
         for (Servei servei : serveisTreballador) {
             if (servei.getId() == intIdServei) {
                 serveiActual = servei; //Obteni el servei que es vol assignar
             }
+        }
+        if (serveiActual == null) {
+            return false; //Si no es troba el servei d'aquest id torna false
         }
         try {
             //Cream un objecte Date amb data i hora per la hora inici i un altre per la hora final del servei que es vol assignar
